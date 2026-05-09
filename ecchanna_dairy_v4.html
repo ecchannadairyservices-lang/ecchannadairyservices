@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1a5c2a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Ecchanna Dairy Services</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#1a5c2a; --green-light:#2d8a45; --green-pale:#e8f5ec;
+  --amber:#c97d1a; --amber-pale:#fef3e2;
+  --red:#c0392b; --red-pale:#fdecea;
+  --blue:#1565c0; --blue-pale:#e3f0ff;
+  --purple:#6a1b9a; --purple-pale:#f3e5f5;
+  --text:#1a1a1a; --text-muted:#666;
+  --border:#e0e0e0; --bg:#f5f5f5; --white:#ffffff;
+  --radius:12px; --radius-sm:8px;
+  --font:'Baloo 2',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:15px;}
+.hidden{display:none!important;}
+.screen{height:100vh;overflow-y:auto;}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;background:var(--green);display:flex;align-items:center;justify-content:center;z-index:1000;transition:opacity 0.4s;}
+.splash-inner{text-align:center;color:white;}
+.splash-logo{font-size:5rem;margin-bottom:12px;animation:bounce 1s ease infinite alternate;}
+.splash-name{font-size:2rem;font-weight:700;}
+.splash-sub{font-size:1rem;opacity:0.8;margin-bottom:24px;}
+.splash-loader{width:200px;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;overflow:hidden;margin:0 auto;}
+.loader-bar{height:100%;width:0;background:white;border-radius:2px;animation:load 1.8s ease forwards;}
+@keyframes load{to{width:100%;}}
+@keyframes bounce{from{transform:translateY(0);}to{transform:translateY(-8px);}}
+
+/* SETUP SCREEN */
+#setup-screen{background:var(--green);display:flex;flex-direction:column;justify-content:center;padding:2rem 1.5rem;min-height:100vh;}
+.setup-top{text-align:center;color:white;margin-bottom:2rem;}
+.setup-logo{font-size:3.5rem;}
+.setup-title{font-size:1.6rem;font-weight:700;margin-top:8px;}
+.setup-sub{font-size:0.85rem;opacity:0.8;margin-top:4px;}
+.setup-card{background:white;border-radius:var(--radius);padding:20px;}
+.setup-card h3{font-size:1rem;font-weight:700;margin-bottom:4px;}
+.setup-card p{font-size:0.8rem;color:var(--text-muted);margin-bottom:14px;line-height:1.5;}
+.setup-steps{background:var(--green-pale);border-radius:var(--radius-sm);padding:12px;margin-bottom:14px;}
+.setup-step{font-size:0.78rem;color:var(--green);margin-bottom:4px;}
+.setup-step:last-child{margin-bottom:0;}
+
+/* LOGIN */
+#login-screen{background:var(--green);display:flex;flex-direction:column;justify-content:center;padding:2rem 1.5rem;}
+.login-top{text-align:center;color:white;margin-bottom:2rem;}
+.login-logo{font-size:4rem;}
+.login-title{font-size:1.8rem;font-weight:700;}
+.login-sub{font-size:0.9rem;opacity:0.8;margin-top:4px;}
+.sync-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.2);border-radius:20px;padding:4px 10px;font-size:0.75rem;color:white;margin-top:8px;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#4caf50;}
+.login-roles{display:flex;flex-direction:column;gap:12px;}
+.role-btn{background:white;border:none;border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left;transition:transform 0.1s,opacity 0.1s;}
+.role-btn:active{transform:scale(0.97);}
+.role-icon{font-size:2rem;}
+.role-label{font-size:1rem;font-weight:600;display:block;font-family:var(--font);}
+.role-desc{font-size:0.78rem;color:var(--text-muted);display:block;font-family:var(--font);}
+
+/* SETUP LINK */
+.setup-link{text-align:center;margin-top:16px;}
+.setup-link button{background:none;border:none;color:rgba(255,255,255,0.7);font-size:0.78rem;text-decoration:underline;cursor:pointer;font-family:var(--font);}
+
+/* TOP BAR */
+.top-bar{background:var(--green);color:white;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.back-btn{background:none;border:none;color:white;font-size:0.9rem;cursor:pointer;font-family:var(--font);padding:4px;}
+.top-title{font-size:1rem;font-weight:600;}
+
+/* DELIVERY */
+.delivery-notice{background:var(--red-pale);border-left:4px solid var(--red);margin:16px;padding:14px;border-radius:var(--radius-sm);display:flex;align-items:center;gap:12px;}
+.notice-icon{font-size:1.8rem;}
+.notice-title{font-size:0.9rem;font-weight:600;color:var(--red);}
+.stop-card{background:white;margin:0 16px 10px;padding:14px;border-radius:var(--radius);border:1.5px solid var(--red);}
+.stop-name{font-size:1rem;font-weight:600;}
+.stop-area{font-size:0.8rem;color:var(--text-muted);margin-top:2px;}
+.stop-reason{font-size:0.78rem;color:var(--red);background:var(--red-pale);padding:3px 8px;border-radius:20px;display:inline-block;margin-top:6px;}
+.delivery-all-good{text-align:center;padding:3rem 1rem;}
+
+/* PARENT VIEW */
+.parent-header{background:var(--green);color:white;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.parent-logo{font-size:1.1rem;font-weight:700;}
+.logout-small{background:rgba(255,255,255,0.2);border:none;color:white;padding:6px 12px;border-radius:20px;font-size:0.78rem;cursor:pointer;font-family:var(--font);}
+.parent-summary{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.summary-stat{background:white;border-radius:var(--radius);padding:14px;text-align:center;}
+.summary-val{font-size:1.8rem;font-weight:700;}
+.summary-val.red{color:var(--red);}
+.summary-val.green{color:var(--green);}
+.summary-label{font-size:0.72rem;color:var(--text-muted);margin-top:2px;}
+.parent-actions{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px;}
+.big-action-btn{border:none;border-radius:var(--radius);padding:18px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform 0.1s;font-family:var(--font);width:100%;text-align:left;}
+.big-action-btn:active{transform:scale(0.98);}
+.big-action-btn.green{background:var(--green-pale);}
+.big-action-btn.blue{background:var(--blue-pale);}
+.big-action-btn.orange{background:var(--amber-pale);}
+.ba-icon{font-size:2rem;}
+.ba-label{font-size:1.05rem;font-weight:600;}
+.parent-section{position:fixed;inset:0;background:var(--bg);z-index:20;overflow-y:auto;}
+.section-head{background:var(--green);color:white;padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;}
+.section-head button{background:none;border:none;color:white;font-size:0.9rem;cursor:pointer;font-family:var(--font);}
+.section-head span{font-size:1rem;font-weight:600;}
+
+/* OWNER VIEW */
+#owner-screen{padding-bottom:70px;}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(6,1fr);z-index:100;padding-bottom:env(safe-area-inset-bottom);}
+.nav-btn{display:flex;flex-direction:column;align-items:center;padding:8px 4px;border:none;background:none;cursor:pointer;color:var(--text-muted);font-family:var(--font);transition:color 0.15s;}
+.nav-btn.active{color:var(--green);}
+.nav-icon{font-size:1.3rem;}
+.nav-label{font-size:0.58rem;margin-top:2px;font-weight:500;}
+.owner-tab{display:none;min-height:100vh;}
+.owner-tab.active{display:block;}
+.owner-header{background:var(--green);color:white;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.owner-title{font-size:1.1rem;font-weight:700;}
+.add-btn{background:rgba(255,255,255,0.2);border:none;color:white;padding:6px 14px;border-radius:20px;font-size:0.85rem;cursor:pointer;font-family:var(--font);}
+.sync-indicator{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.2);border-radius:20px;padding:5px 10px;font-size:0.72rem;color:white;cursor:pointer;}
+.sync-dot-anim{width:7px;height:7px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px;}
+.stat-card{background:white;border-radius:var(--radius);padding:14px;}
+.stat-val{font-size:1.7rem;font-weight:700;}
+.stat-val.red{color:var(--red);}
+.stat-val.green{color:var(--green);}
+.stat-val.amber{color:var(--amber);}
+.stat-label{font-size:0.72rem;color:var(--text-muted);margin-top:2px;}
+
+/* CARDS */
+.section-card{background:white;margin:0 14px 14px;border-radius:var(--radius);padding:16px;}
+.section-card-title{font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:12px;}
+.cust-row{padding:12px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;}
+.cust-row:last-child{border:none;}
+.cust-avatar{width:40px;height:40px;border-radius:50%;background:var(--green-pale);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;color:var(--green);flex-shrink:0;}
+.cust-name{font-size:0.95rem;font-weight:600;}
+.cust-sub{font-size:0.75rem;color:var(--text-muted);margin-top:2px;}
+.cust-bal{text-align:right;}
+.cust-bal-amt{font-size:0.95rem;font-weight:700;}
+.badge{display:inline-block;font-size:0.65rem;padding:2px 7px;border-radius:20px;font-weight:600;margin-top:3px;}
+.badge-red{background:var(--red-pale);color:var(--red);}
+.badge-green{background:var(--green-pale);color:var(--green);}
+.badge-amber{background:var(--amber-pale);color:var(--amber);}
+.badge-stop{background:#333;color:white;}
+.badge-purple{background:var(--purple-pale);color:var(--purple);}
+
+/* FORMS */
+.form-card{background:white;margin:14px;border-radius:var(--radius);padding:16px;}
+label{display:block;font-size:0.78rem;color:var(--text-muted);font-weight:600;margin-top:12px;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.3px;}
+label:first-child{margin-top:0;}
+input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.95rem;font-family:var(--font);color:var(--text);background:white;outline:none;transition:border 0.15s;}
+input:focus,select:focus,textarea:focus{border-color:var(--green);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px;}
+.search-box{margin:12px 14px 8px;width:calc(100% - 28px);display:block;}
+.filter-row{display:flex;gap:6px;padding:0 14px 8px;flex-wrap:wrap;overflow-x:auto;}
+.filter-pill{padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);background:white;font-size:0.75rem;cursor:pointer;white-space:nowrap;font-family:var(--font);}
+.filter-pill.active{background:var(--green);color:white;border-color:var(--green);}
+
+/* BUTTONS */
+.submit-btn{display:block;width:100%;padding:13px;margin-top:14px;background:var(--green);color:white;border:none;border-radius:var(--radius);font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--font);transition:opacity 0.15s,transform 0.1s;}
+.submit-btn:active{transform:scale(0.98);}
+.submit-btn.secondary{background:white;color:var(--green);border:2px solid var(--green);}
+.submit-btn.danger{background:var(--red);}
+.wa-btn{display:block;width:100%;padding:13px;margin-top:10px;background:#25D366;color:white;border:none;border-radius:var(--radius);font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--font);}
+.pay-method-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+.method-btn{padding:9px 6px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:white;font-size:0.82rem;cursor:pointer;font-family:var(--font);transition:all 0.15s;}
+.method-btn.active{border-color:var(--green);background:var(--green-pale);font-weight:600;}
+
+/* BILL */
+.bill-cust-name{font-size:1.05rem;font-weight:700;color:var(--green);margin-bottom:4px;}
+.absent-note{font-size:0.78rem;color:var(--amber);margin-top:4px;}
+.bill-breakdown{background:var(--bg);border-radius:var(--radius-sm);padding:12px;margin:10px 0 0;}
+.bill-balance{background:var(--green-pale);border-radius:var(--radius-sm);padding:12px;margin-top:8px;}
+.brow{display:flex;justify-content:space-between;font-size:0.85rem;padding:3px 0;color:var(--text-muted);}
+.brow.total{font-size:1rem;font-weight:700;color:var(--text);border-top:1px solid var(--border);padding-top:8px;margin-top:4px;}
+.brow.balance-row{font-size:1.1rem;font-weight:700;}
+.balance-display{background:var(--red-pale);color:var(--red);border-radius:var(--radius-sm);padding:10px 12px;font-weight:700;font-size:1.1rem;margin-top:4px;}
+
+/* AI */
+.help-text{font-size:0.8rem;color:var(--text-muted);line-height:1.5;margin-bottom:8px;}
+.ai-result-card{background:var(--blue-pale);border-radius:var(--radius);padding:14px;margin-top:12px;border:1.5px solid #90caf9;}
+.ai-result-title{font-size:0.85rem;font-weight:700;margin-bottom:8px;}
+.ai-row{font-size:0.85rem;padding:3px 0;color:var(--text-muted);}
+.ai-row span{color:var(--text);font-weight:600;}
+.img-upload-area{border:2px dashed var(--border);border-radius:var(--radius);padding:24px;text-align:center;cursor:pointer;transition:border 0.15s;margin-top:8px;background:white;}
+.img-upload-area:hover{border-color:var(--green);}
+.img-upload-area input{display:none;}
+.img-preview{max-width:100%;border-radius:var(--radius-sm);margin-top:8px;}
+.tab-switch{display:flex;gap:6px;margin-bottom:12px;}
+.tab-switch button{flex:1;padding:8px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:white;font-family:var(--font);font-size:0.82rem;cursor:pointer;}
+.tab-switch button.active{background:var(--blue-pale);border-color:var(--blue);color:var(--blue);font-weight:600;}
+
+/* PENDING */
+.pending-row{background:white;margin:0 14px 8px;border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;}
+.pending-info{flex:1;}
+.pending-name{font-size:0.95rem;font-weight:600;}
+.pending-sub{font-size:0.75rem;color:var(--text-muted);margin-top:2px;}
+.pending-amt{font-size:1.1rem;font-weight:700;color:var(--red);}
+.remind-row{background:white;margin:0 14px 8px;border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;}
+.wa-small{background:#25D366;color:white;border:none;padding:8px 14px;border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;cursor:pointer;font-family:var(--font);white-space:nowrap;}
+
+/* BREED */
+.breed-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.breed-row:last-child{border:none;}
+.breed-emoji{font-size:1.5rem;width:32px;}
+.breed-info{flex:1;}
+.breed-name{font-size:0.9rem;font-weight:600;}
+.breed-rate-inp{width:80px;padding:6px 8px;font-size:0.85rem;}
+.breed-del{background:none;border:none;color:var(--red);cursor:pointer;font-size:1rem;padding:4px;}
+.add-breed-form{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+
+/* MSGS */
+.msg-ok{background:var(--green-pale);color:var(--green);padding:8px 12px;border-radius:var(--radius-sm);font-size:0.85rem;margin-top:8px;}
+.msg-err{background:var(--red-pale);color:var(--red);padding:8px 12px;border-radius:var(--radius-sm);font-size:0.85rem;margin-top:8px;}
+.payment-row{padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.payment-row:last-child{border:none;}
+.payment-name{font-size:0.88rem;font-weight:600;}
+.payment-meta{font-size:0.72rem;color:var(--text-muted);margin-top:2px;}
+.payment-amt{font-size:0.95rem;font-weight:700;color:var(--green);}
+.empty-state{text-align:center;padding:2rem;color:var(--text-muted);font-size:0.85rem;}
+.danger-tag{background:#ffebeb;color:#c62828;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;display:inline-block;margin-top:8px;}
+.mini-btn{border:none;background:#e8f5ec;color:#1a5c2a;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:600;margin-right:6px;text-decoration:none;display:inline-block;cursor:pointer;}
+.stop-btn{background:#fdecea;color:#c0392b;}
+
+/* LEDGER MODULE */
+.ledger-tabs{display:flex;overflow-x:auto;padding:12px 14px 0;gap:8px;}
+.ledger-tab-pill{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:white;font-size:0.78rem;cursor:pointer;white-space:nowrap;font-family:var(--font);font-weight:600;}
+.ledger-tab-pill.active{background:var(--purple);color:white;border-color:var(--purple);}
+.ledger-section{display:none;padding-bottom:80px;}
+.ledger-section.active{display:block;}
+.ledger-item{background:white;margin:0 14px 8px;border-radius:var(--radius);padding:14px;}
+.ledger-item-head{display:flex;justify-content:space-between;align-items:flex-start;}
+.ledger-item-name{font-size:0.95rem;font-weight:600;}
+.ledger-item-sub{font-size:0.75rem;color:var(--text-muted);margin-top:2px;}
+.ledger-item-amt{text-align:right;}
+.ledger-credit{font-size:1rem;font-weight:700;color:var(--green);}
+.ledger-debit{font-size:1rem;font-weight:700;color:var(--red);}
+.ledger-pending{font-size:1rem;font-weight:700;color:var(--amber);}
+.ledger-status{font-size:0.7rem;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:3px;}
+.status-paid{background:var(--green-pale);color:var(--green);font-weight:600;}
+.status-pending{background:var(--amber-pale);color:var(--amber);font-weight:600;}
+.status-partial{background:var(--blue-pale);color:var(--blue);font-weight:600;}
+.ledger-summary-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 14px;}
+.lsb-card{background:white;border-radius:var(--radius-sm);padding:10px;text-align:center;}
+.lsb-val{font-size:1.3rem;font-weight:700;}
+.lsb-label{font-size:0.68rem;color:var(--text-muted);}
+
+/* SYNC STATUS */
+.sync-status-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:white;margin:0 14px 10px;border-radius:var(--radius-sm);font-size:0.78rem;color:var(--text-muted);}
+.sync-ok{color:var(--green);}
+.sync-warn{color:var(--amber);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:flex-end;}
+.modal-sheet{background:white;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:1.1rem;font-weight:700;margin-bottom:16px;}
+.modal-close{float:right;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted);}
+
+/* SPINNER */
+.spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* LOADING OVERLAY */
+#loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.85);z-index:500;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+.loading-text{font-size:0.9rem;color:var(--text-muted);}
+.loading-spinner{width:36px;height:36px;border:4px solid var(--green-pale);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;}
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay" class="hidden">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loading-text">Syncing with Google Sheets...</div>
+</div>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-inner">
+    <div class="splash-logo">🐄</div>
+    <div class="splash-name">Ecchanna Dairy</div>
+    <div class="splash-sub">Services</div>
+    <div class="splash-loader"><div class="loader-bar"></div></div>
+  </div>
+</div>
+
+<!-- GOOGLE SHEETS SETUP -->
+<div id="setup-screen" class="screen hidden">
+  <div class="setup-top">
+    <div class="setup-logo">🐄</div>
+    <div class="setup-title">Connect Google Sheets</div>
+    <div class="setup-sub">One-time setup for cloud backup</div>
+  </div>
+  <div class="setup-card">
+    <h3>📋 Setup Instructions</h3>
+    <p>Follow these steps once to connect your Google Sheet as the backend:</p>
+    <div class="setup-steps">
+      <div class="setup-step">1️⃣ Open <b>script.google.com</b> → New project</div>
+      <div class="setup-step">2️⃣ Paste the Apps Script code (copy from below)</div>
+      <div class="setup-step">3️⃣ Click Deploy → New deployment → Web App</div>
+      <div class="setup-step">4️⃣ Set "Who has access" → Anyone</div>
+      <div class="setup-step">5️⃣ Copy the Web App URL and paste below</div>
+    </div>
+    <button class="submit-btn secondary" onclick="copyAppsScript()" style="margin-top:0">📋 Copy Apps Script Code</button>
+    <label style="margin-top:14px">Your Google Apps Script Web App URL</label>
+    <input type="url" id="setup-url" placeholder="https://script.google.com/macros/s/…/exec">
+    <label>Sync Token (the SECRET_TOKEN you set in the Apps Script)</label>
+    <input type="text" id="setup-synctoken" placeholder="ecchanna2025dairy" autocomplete="off">
+    <p class="help-text" style="margin-top:4px">Default is <b>ecchanna2025dairy</b> — change only if you edited the Apps Script</p>
+    <label>Anthropic API Key (for AI features)</label>
+    <input type="text" id="setup-apikey" placeholder="sk-ant-…" autocomplete="off">
+    <p class="help-text" style="margin-top:6px">⚠️ Key stored locally only, never sent anywhere else</p>
+    <button class="submit-btn" onclick="saveSetup()">✅ Save & Connect</button>
+    <div id="setup-msg"></div>
+    <button class="submit-btn secondary" onclick="skipSetup()" style="margin-top:8px">Use local storage only (no sync)</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen" class="screen hidden">
+  <div class="login-top">
+    <div class="login-logo">🐄</div>
+    <h1 class="login-title">Ecchanna Dairy</h1>
+    <p class="login-sub">Who is logging in?</p>
+    <div class="sync-badge" id="sync-badge">
+      <div class="sync-dot" id="sync-status-dot"></div>
+      <span id="sync-status-text">Loading...</span>
+    </div>
+  </div>
+  <div class="login-roles">
+    <button class="role-btn" onclick="login('owner')">
+      <span class="role-icon">👤</span>
+      <div><span class="role-label">Owner</span><span class="role-desc">Full access – all features</span></div>
+    </button>
+    <button class="role-btn" onclick="login('father')">
+      <span class="role-icon">👨</span>
+      <div><span class="role-label">Arjun / Sowmya</span><span class="role-desc">Payments & reminders</span></div>
+    </button>
+    <button class="role-btn" onclick="login('delivery')">
+      <span class="role-icon">🛵</span>
+      <div><span class="role-label">Delivery Boy</span><span class="role-desc">Stop-list only</span></div>
+    </button>
+  </div>
+  <div class="setup-link"><button onclick="goToSetup()">⚙️ Change Google Sheets settings</button></div>
+</div>
+
+<!-- DELIVERY VIEW -->
+<div id="delivery-screen" class="screen hidden">
+  <div class="top-bar">
+    <button class="back-btn" onclick="logout()">← Back</button>
+    <span class="top-title">Today's Stop List</span>
+    <span></span>
+  </div>
+  <div class="delivery-notice">
+    <div class="notice-icon">🚫</div>
+    <div><div class="notice-title">Do NOT deliver milk to these customers today</div></div>
+  </div>
+  <div id="stop-list-container"></div>
+  <div class="delivery-all-good hidden" id="delivery-ok">
+    <div style="font-size:3rem">✅</div>
+    <div style="font-size:1.1rem;font-weight:600;color:#1a5c2a">All customers active today</div>
+    <div style="font-size:0.85rem;color:#666;margin-top:4px">No stops on this route</div>
+  </div>
+</div>
+
+<!-- PARENT VIEW -->
+<div id="parent-screen" class="screen hidden">
+  <div class="parent-header">
+    <div class="parent-logo">🐄 Ecchanna Dairy</div>
+    <button class="logout-small" onclick="logout()">Exit</button>
+  </div>
+  <div id="parent-summary"></div>
+  <div class="parent-actions">
+    <button class="big-action-btn green" onclick="showSection('parent-pending')">
+      <span class="ba-icon">💰</span><span class="ba-label">Who hasn't paid?</span>
+    </button>
+    <button class="big-action-btn blue" onclick="showSection('parent-record')">
+      <span class="ba-icon">✅</span><span class="ba-label">Mark payment received</span>
+    </button>
+    <button class="big-action-btn orange" onclick="showSection('parent-remind')">
+      <span class="ba-icon">📲</span><span class="ba-label">Send WhatsApp reminder</span>
+    </button>
+  </div>
+  <div id="parent-pending" class="parent-section hidden">
+    <div class="section-head"><button onclick="hideSection('parent-pending')">← Back</button><span>Pending payments</span></div>
+    <div id="parent-pending-list"></div>
+  </div>
+  <div id="parent-record" class="parent-section hidden">
+    <div class="section-head"><button onclick="hideSection('parent-record')">← Back</button><span>Mark payment</span></div>
+    <div class="form-card">
+      <label>Customer</label>
+      <select id="pr-cust" onchange="fillParentBal()"><option value="">-- select --</option></select>
+      <label>Balance due</label>
+      <div class="balance-display" id="pr-bal">Select customer</div>
+      <label>Amount received (₹)</label>
+      <input type="number" id="pr-amt" placeholder="Enter amount">
+      <label>How was it paid?</label>
+      <div class="pay-method-row">
+        <button class="method-btn active" data-method="Cash" onclick="selectMethod(this)">💵 Cash</button>
+        <button class="method-btn" data-method="GPay" onclick="selectMethod(this)">📱 GPay</button>
+        <button class="method-btn" data-method="Paytm" onclick="selectMethod(this)">💙 Paytm</button>
+        <button class="method-btn" data-method="Other UPI" onclick="selectMethod(this)">🔄 Other UPI</button>
+      </div>
+      <button class="submit-btn" onclick="parentRecordPayment()">Save payment</button>
+      <div id="pr-msg"></div>
+    </div>
+  </div>
+  <div id="parent-remind" class="parent-section hidden">
+    <div class="section-head"><button onclick="hideSection('parent-remind')">← Back</button><span>Send reminders</span></div>
+    <p style="font-size:0.8rem;color:#666;padding:0 1rem 0.5rem">Tap "Send" to open WhatsApp with the message ready.</p>
+    <div id="parent-remind-list"></div>
+  </div>
+</div>
+
+<!-- OWNER VIEW -->
+<div id="owner-screen" class="screen hidden">
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="ownerTab('dashboard')" id="nav-dashboard"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></button>
+    <button class="nav-btn" onclick="ownerTab('customers')" id="nav-customers"><span class="nav-icon">👥</span><span class="nav-label">Customers</span></button>
+    <button class="nav-btn" onclick="ownerTab('billing')" id="nav-billing"><span class="nav-icon">🧾</span><span class="nav-label">Billing</span></button>
+    <button class="nav-btn" onclick="ownerTab('ledger')" id="nav-ledger"><span class="nav-icon">📒</span><span class="nav-label">Ledger</span></button>
+    <button class="nav-btn" onclick="ownerTab('ai')" id="nav-ai"><span class="nav-icon">🤖</span><span class="nav-label">AI Read</span></button>
+    <button class="nav-btn" onclick="ownerTab('settings')" id="nav-settings"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <div class="owner-tab active" id="tab-dashboard">
+    <div class="owner-header">
+      <div class="owner-title">🐄 Ecchanna Dairy</div>
+      <div class="sync-indicator" onclick="syncNow()" title="Sync with Google Sheets">
+        <div class="sync-dot-anim"></div>
+        <span id="last-sync-text">Sync</span>
+      </div>
+    </div>
+    <div class="stats-grid" id="dash-stats"></div>
+    <div class="section-card">
+      <div class="section-card-title">📅 <span id="dash-month"></span> — Top overdue</div>
+      <div id="dash-overdue"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-title">📋 Recent payments</div>
+      <div id="dash-recent"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-title">📒 Ledger snapshot</div>
+      <div id="dash-ledger-snap"></div>
+    </div>
+  </div>
+
+  <!-- CUSTOMERS -->
+  <div class="owner-tab" id="tab-customers">
+    <div class="owner-header">
+      <div class="owner-title">Customers</div>
+      <button class="add-btn" onclick="showAddCustomer()">+ Add</button>
+    </div>
+    <input type="text" class="search-box" placeholder="Search name, area, breed, phone…" oninput="renderCustomers(this.value)" id="cust-search">
+    <div class="filter-row" id="area-filters"></div>
+    <div id="customers-list"></div>
+  </div>
+
+  <!-- BILLING -->
+  <div class="owner-tab" id="tab-billing">
+    <div class="owner-header"><div class="owner-title">Bill Calculator</div></div>
+    <div class="form-card">
+      <label>Select customer</label>
+      <select id="bill-cust-sel" onchange="loadBillCalc()"><option value="">-- select customer --</option></select>
+    </div>
+    <div id="bill-calc-body" style="display:none">
+      <div class="form-card">
+        <div class="bill-cust-name" id="bill-cust-display"></div>
+        <label>Milk breed</label>
+        <select id="bc-breed" onchange="calcBill()"></select>
+        <div class="two-col">
+          <div><label>Litres / day</label><input type="number" id="bc-ltrs" step="0.5" oninput="calcBill()"></div>
+          <div><label>Absent days</label><input type="number" id="bc-abs" value="0" min="0" oninput="calcBill()"></div>
+        </div>
+        <div class="absent-note" id="bc-abs-note"></div>
+        <div class="bill-breakdown" id="bc-breakdown"></div>
+        <label>Amount paid so far (₹)</label>
+        <input type="number" id="bc-paid" value="0" oninput="calcBill()">
+        <div class="bill-balance" id="bc-balance"></div>
+        <label>Payment method</label>
+        <div class="pay-method-row">
+          <button class="method-btn active" data-method="Cash" onclick="selectMethod(this)">💵 Cash</button>
+          <button class="method-btn" data-method="GPay" onclick="selectMethod(this)">📱 GPay</button>
+          <button class="method-btn" data-method="Paytm" onclick="selectMethod(this)">💙 Paytm</button>
+          <button class="method-btn" data-method="Other UPI" onclick="selectMethod(this)">🔄 Other</button>
+        </div>
+        <button class="submit-btn" onclick="saveBillCalc()">💾 Save bill</button>
+        <button class="wa-btn" id="bc-wa-btn">📲 Send WhatsApp bill</button>
+        <div id="bc-msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEDGER MODULE -->
+  <div class="owner-tab" id="tab-ledger">
+    <div class="owner-header">
+      <div class="owner-title">📒 Business Ledger</div>
+      <button class="add-btn" onclick="showLedgerAdd()">+ Add</button>
+    </div>
+    <div class="ledger-tabs">
+      <button class="ledger-tab-pill active" onclick="switchLedgerTab('loans')" id="ltab-loans">💸 Loans</button>
+      <button class="ledger-tab-pill" onclick="switchLedgerTab('salaries')" id="ltab-salaries">👷 Salaries</button>
+      <button class="ledger-tab-pill" onclick="switchLedgerTab('shipments')" id="ltab-shipments">🚚 Shipments</button>
+      <button class="ledger-tab-pill" onclick="switchLedgerTab('orders')" id="ltab-orders">🏭 Dairy Orders</button>
+      <button class="ledger-tab-pill" onclick="switchLedgerTab('expenses')" id="ltab-expenses">💼 Expenses</button>
+    </div>
+
+    <div class="ledger-section active" id="ls-loans">
+      <div class="ledger-summary-bar" id="lsum-loans"></div>
+      <div id="ll-loans-list"></div>
+    </div>
+    <div class="ledger-section" id="ls-salaries">
+      <div class="ledger-summary-bar" id="lsum-salaries"></div>
+      <div id="ll-salaries-list"></div>
+    </div>
+    <div class="ledger-section" id="ls-shipments">
+      <div class="ledger-summary-bar" id="lsum-shipments"></div>
+      <div id="ll-shipments-list"></div>
+    </div>
+    <div class="ledger-section" id="ls-orders">
+      <div class="ledger-summary-bar" id="lsum-orders"></div>
+      <div id="ll-orders-list"></div>
+    </div>
+    <div class="ledger-section" id="ls-expenses">
+      <div class="ledger-summary-bar" id="lsum-expenses"></div>
+      <div id="ll-expenses-list"></div>
+    </div>
+  </div>
+
+  <!-- AI READER -->
+  <div class="owner-tab" id="tab-ai">
+    <div class="owner-header"><div class="owner-title">AI Message Reader</div></div>
+    <div class="form-card">
+      <div class="tab-switch">
+        <button class="active" onclick="switchAITab('text', this)">💬 Text message</button>
+        <button onclick="switchAITab('screenshot', this)">📸 Screenshot</button>
+      </div>
+      <p class="help-text">AI will detect payment amounts, breed changes, absent days, and update the record automatically.</p>
+      <label>Customer (helps AI be accurate)</label>
+      <select id="ai-cust-sel"><option value="">-- optional --</option></select>
+
+      <!-- TEXT TAB -->
+      <div id="ai-text-tab">
+        <label>Paste customer's message</label>
+        <textarea id="ai-msg-inp" rows="4" placeholder="e.g. 'Bhai aaj 800 bheja GPay se' or '3 din dudh nahi aaya' or 'done paid 1500'"></textarea>
+      </div>
+
+      <!-- SCREENSHOT TAB -->
+      <div id="ai-screenshot-tab" class="hidden">
+        <label>Upload screenshot (WhatsApp, GPay, etc.)</label>
+        <div class="img-upload-area" onclick="document.getElementById('ai-img-input').click()">
+          <div style="font-size:2rem">📸</div>
+          <div style="font-size:0.85rem;color:var(--text-muted);margin-top:6px">Tap to upload screenshot</div>
+          <input type="file" id="ai-img-input" accept="image/*" onchange="previewImage(this)">
+        </div>
+        <img id="ai-img-preview" class="img-preview hidden">
+      </div>
+
+      <button class="submit-btn" id="ai-read-btn" onclick="runAIRead()">🤖 Read & detect</button>
+      <div id="ai-result-box"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-title">Recent AI reads</div>
+      <div id="ai-history-list"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="owner-tab" id="tab-settings">
+    <div class="owner-header"><div class="owner-title">Settings</div></div>
+
+    <div class="section-card">
+      <div class="section-card-title">☁️ Google Sheets Sync</div>
+      <div class="sync-status-bar" id="sheets-sync-status">
+        <span>Checking connection…</span>
+      </div>
+      <label>Web App URL</label>
+      <input type="url" id="sheets-url-inp" placeholder="https://script.google.com/macros/s/…/exec">
+      <label>Sync Token (must match SECRET_TOKEN in Apps Script)</label>
+      <input type="text" id="sync-token-inp" placeholder="ecchanna2025dairy" autocomplete="off">
+      <label>Anthropic API Key (for AI photo reading)</label>
+      <input type="text" id="apikey-inp" placeholder="sk-ant-…" autocomplete="off">
+      <button class="submit-btn" onclick="saveSheetsSettings()">Save & Test Connection</button>
+      <button class="submit-btn secondary" onclick="syncNow()" style="margin-top:8px">🔄 Sync now</button>
+      <div id="sheets-msg"></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-card-title">🐄 Breed rates (₹ per litre)</div>
+      <div id="breed-settings-list"></div>
+      <div class="add-breed-form">
+        <div class="two-col">
+          <div><label>Breed name</label><input type="text" id="new-breed-name" placeholder="e.g. Gir Cow"></div>
+          <div><label>Rate (₹/L)</label><input type="number" id="new-breed-rate" placeholder="120"></div>
+        </div>
+        <input type="text" id="new-breed-emoji" placeholder="Emoji (optional, e.g. 🐮)" style="max-width:160px;margin-top:8px">
+        <button class="submit-btn" onclick="addBreed()" style="margin-top:8px">Add breed</button>
+        <div id="breed-msg"></div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-card-title">💳 Payment details</div>
+      <label>GPay number</label><input type="text" id="gpay-num" placeholder="91XXXXXXXXXX">
+      <label>Paytm number</label><input type="text" id="paytm-num" placeholder="91XXXXXXXXXX">
+      <label>Business name</label><input type="text" id="biz-name-inp" placeholder="Ecchanna Dairy Services">
+      <button class="submit-btn" onclick="savePaymentSettings()">Save</button>
+      <div id="pay-set-msg"></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-card-title">📅 Billing month</div>
+      <div class="two-col">
+        <div><label>Month</label><input type="month" id="bill-month-inp"></div>
+        <div><label>Days in month</label><input type="number" id="bill-days-inp" min="28" max="31"></div>
+      </div>
+      <button class="submit-btn" onclick="saveMonthSettings()">Save</button>
+    </div>
+
+    <div class="section-card">
+      <div class="section-card-title">📤 Bulk import customers</div>
+      <p class="help-text">CSV: Name, WhatsApp number, Area, Breed, Litres/day</p>
+      <textarea id="bulk-csv" rows="5" style="font-family:monospace;font-size:12px" placeholder="Ramesh Kumar,919876543210,Vidyanagar,Malnad Gidda,1"></textarea>
+      <button class="submit-btn" onclick="bulkImport()">Import customers</button>
+      <div id="import-msg"></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-card-title">💾 Backup & export</div>
+      <button class="submit-btn" onclick="exportCSV()">📥 Download CSV</button>
+      <button class="submit-btn secondary" onclick="exportJSON()" style="margin-top:8px">📦 Full backup (JSON)</button>
+      <div style="margin-top:16px;border-top:1px solid #eee;padding-top:16px">
+        <div style="font-weight:600;font-size:0.85rem;margin-bottom:6px">Restore from JSON backup</div>
+        <textarea id="restore-inp" rows="3" style="font-size:11px;font-family:monospace" placeholder="Paste JSON backup here"></textarea>
+        <button class="submit-btn secondary" onclick="restoreJSON()">Restore</button>
+        <div id="restore-msg"></div>
+      </div>
+    </div>
+
+    <div class="section-card" id="add-customer-card" style="display:none">
+      <div class="section-card-title">➕ Add new customer</div>
+      <label>Full name *</label><input type="text" id="nc-name" placeholder="Ramesh Kumar">
+      <label>WhatsApp number * (with 91)</label>
+      <input type="text" id="nc-phone" placeholder="919876543210">
+      <button type="button" class="submit-btn secondary" onclick="pickContact()" style="margin-top:8px">📱 Pick From Contacts</button>
+      <label>Area / locality *</label><input type="text" id="nc-area" placeholder="Vidyanagar">
+      <label>Milk breed *</label><select id="nc-breed"></select>
+      <div class="two-col">
+        <div><label>Litres / day *</label><input type="number" id="nc-ltrs" step="0.5" placeholder="1"></div>
+        <div><label>Custom rate (₹/L)</label><input type="number" id="nc-crate" placeholder="(optional)"></div>
+      </div>
+      <label>Stop delivery?</label>
+      <select id="nc-stopped"><option value="no">No — active customer</option><option value="yes">Yes — stop delivery</option></select>
+      <button class="submit-btn" onclick="addCustomer()">Add customer</button>
+      <div id="nc-msg"></div>
+    </div>
+
+    <div style="padding:1rem;text-align:center">
+      <button class="logout-small" onclick="logout()" style="margin:0 auto;display:block;background:var(--red-pale);color:var(--red)">🚪 Log out</button>
+    </div>
+  </div>
+</div>
+
+<!-- LEDGER ADD MODAL -->
+<div id="ledger-modal" class="modal-overlay hidden">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closeLedgerModal()">✕</button>
+    <div class="modal-title" id="ledger-modal-title">Add entry</div>
+    <div id="ledger-modal-body"></div>
+  </div>
+</div>
+
+<!-- CUSTOMER DETAIL MODAL -->
+<div id="cust-modal" class="modal-overlay hidden">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closeCustModal()">✕</button>
+    <div id="cust-modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// APPS SCRIPT CODE (for copy to clipboard)
+// ═══════════════════════════════════════════════════════════
+const APPS_SCRIPT_CODE = `
+// 🔐 CHANGE THIS TO YOUR OWN SECRET PASSWORD
+const SECRET_TOKEN = "ecchanna2025dairy";
+
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.tryLock(10000);
+  try {
+    const data = JSON.parse(e.postData.contents);
+    // Token check
+    if (data.token !== SECRET_TOKEN) {
+      return ContentService.createTextOutput(JSON.stringify({ok:false,msg:'Unauthorized'})).setMimeType(ContentService.MimeType.JSON);
+    }
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const action = data.action;
+    if (action === 'sync') return ContentService.createTextOutput(JSON.stringify(handleSync(ss, data))).setMimeType(ContentService.MimeType.JSON);
+    if (action === 'push') return ContentService.createTextOutput(JSON.stringify(handlePush(ss, data))).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({ok:false,msg:'Unknown action'})).setMimeType(ContentService.MimeType.JSON);
+  } finally { lock.releaseLock(); }
+}
+
+function doGet(e) {
+  // Token check for GET requests
+  if (e.parameter.token !== SECRET_TOKEN) {
+    return ContentService.createTextOutput(JSON.stringify({ok:false,msg:'Unauthorized'})).setMimeType(ContentService.MimeType.JSON);
+  }
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const action = e.parameter.action || 'ping';
+  if (action === 'ping') return ContentService.createTextOutput(JSON.stringify({ok:true,msg:'Ecchanna Dairy Backend v2'})).setMimeType(ContentService.MimeType.JSON);
+  if (action === 'pull') {
+    const data = {};
+    ['customers','bills','breeds','settings','aiHistory','ledger'].forEach(sheet => {
+      const s = ss.getSheetByName(sheet);
+      if (!s) { data[sheet] = []; return; }
+      const rows = s.getDataRange().getValues();
+      if (rows.length <= 1) { data[sheet] = []; return; }
+      const headers = rows[0];
+      data[sheet] = rows.slice(1).map(r => Object.fromEntries(headers.map((h,i) => [h, r[i]])));
+    });
+    return ContentService.createTextOutput(JSON.stringify({ok:true,data})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function handlePush(ss, data) {
+  const sheets = ['customers','bills','breeds','settings','aiHistory','ledger'];
+  sheets.forEach(name => {
+    if (!data[name]) return;
+    let s = ss.getSheetByName(name);
+    if (!s) s = ss.insertSheet(name);
+    s.clearContents();
+    const arr = Array.isArray(data[name]) ? data[name] : [data[name]];
+    if (arr.length === 0) return;
+    const headers = Object.keys(arr[0]);
+    s.getRange(1, 1, 1, headers.length).setValues([headers]);
+    if (arr.length > 0) {
+      const rows = arr.map(obj => headers.map(h => obj[h] !== undefined ? obj[h] : ''));
+      s.getRange(2, 1, rows.length, headers.length).setValues(rows);
+    }
+  });
+  return {ok:true};
+}
+
+function handleSync(ss, data) {
+  handlePush(ss, data);
+  return {ok:true};
+}
+`;
+
+// ═══════════════════════════════════════════════════════════
+// DATA LAYER
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_BREEDS = [
+  { name:'Malnad Gidda', rate:80, emoji:'🐄' },
+  { name:'Kaat Petta', rate:70, emoji:'🐄' },
+  { name:'HF Cow', rate:60, emoji:'🐄' },
+  { name:'Desi Cow', rate:65, emoji:'🐄' },
+  { name:'Buffalo', rate:90, emoji:'🐃' },
+];
+
+const DB = {
+  get customers(){ return JSON.parse(localStorage.getItem('dairy_customers')||'[]'); },
+  set customers(v){ localStorage.setItem('dairy_customers',JSON.stringify(v)); markDirty(); },
+  get bills(){ return JSON.parse(localStorage.getItem('dairy_bills')||'[]'); },
+  set bills(v){ localStorage.setItem('dairy_bills',JSON.stringify(v)); markDirty(); },
+  get breeds(){ const s=localStorage.getItem('dairy_breeds'); return s?JSON.parse(s):[...DEFAULT_BREEDS]; },
+  set breeds(v){ localStorage.setItem('dairy_breeds',JSON.stringify(v)); markDirty(); },
+  get settings(){
+    const s=JSON.parse(localStorage.getItem('dairy_settings')||'{}');
+    const now=new Date(); const mm=String(now.getMonth()+1).padStart(2,'0');
+    return { gpay:s.gpay||'', paytm:s.paytm||'', bizName:s.bizName||'Ecchanna Dairy Services',
+      billMonth:s.billMonth||`${now.getFullYear()}-${mm}`, billDays:s.billDays||30 };
+  },
+  set settings(v){ localStorage.setItem('dairy_settings',JSON.stringify(v)); markDirty(); },
+  get aiHistory(){ return JSON.parse(localStorage.getItem('dairy_ai_history')||'[]'); },
+  set aiHistory(v){ localStorage.setItem('dairy_ai_history',JSON.stringify(v)); markDirty(); },
+  get ledger(){ return JSON.parse(localStorage.getItem('dairy_ledger')||'[]'); },
+  set ledger(v){ localStorage.setItem('dairy_ledger',JSON.stringify(v)); markDirty(); },
+  get sheetsUrl(){ return localStorage.getItem('dairy_sheets_url')||''; },
+  set sheetsUrl(v){ localStorage.setItem('dairy_sheets_url',v); },
+  get apiKey(){ return localStorage.getItem('dairy_api_key')||''; },
+  set apiKey(v){ localStorage.setItem('dairy_api_key',v); },
+  get syncToken(){ return localStorage.getItem('dairy_sync_token')||'ecchanna2025dairy'; },
+  set syncToken(v){ localStorage.setItem('dairy_sync_token',v); },
+  newId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,5); },
+  customerBalance(custId){
+    return this.bills.filter(b=>b.custId===custId).reduce((s,b)=>s+(Number(b.totalBill||0)-Number(b.amountPaid||0)),0);
+  }
+};
+
+let _dirty = false;
+function markDirty(){ _dirty = true; }
+let _syncTimer = null;
+function scheduleSyncPush(){
+  if(_syncTimer) clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(()=>{ if(_dirty && DB.sheetsUrl) pushToSheets(); },8000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// GOOGLE SHEETS SYNC
+// ═══════════════════════════════════════════════════════════
+let lastSyncTime = null;
+
+async function pingSheets(){
+  const url = DB.sheetsUrl;
+  if(!url){ updateSyncBadge(false,'No sheet connected'); return false; }
+  try {
+    const token = encodeURIComponent(DB.syncToken);
+    const r = await fetch(url+'?action=ping&token='+token, {mode:'cors'});
+    const d = await r.json();
+    updateSyncBadge(d.ok, d.ok?'Connected':'Error: '+( d.msg||'check token'));
+    return d.ok;
+  } catch(e){
+    // Google Apps Script often redirects – try no-cors ping as fallback
+    try {
+      await fetch(url+'?action=ping&token='+encodeURIComponent(DB.syncToken), {mode:'no-cors'});
+      updateSyncBadge(true,'Connected (limited)');
+      return true;
+    } catch(e2){ updateSyncBadge(false,'Offline – check URL'); return false; }
+  }
+}
+
+async function pullFromSheets(){
+  const url = DB.sheetsUrl;
+  if(!url) return false;
+  showLoading('Syncing from Google Sheets…');
+  try {
+    const token = encodeURIComponent(DB.syncToken);
+    const r = await fetch(url+'?action=pull&token='+token, {mode:'cors'});
+    if(!r.ok){ throw new Error('HTTP '+r.status); }
+    const d = await r.json();
+    if(d.ok && d.data){
+      if(d.data.customers && d.data.customers.length) localStorage.setItem('dairy_customers', JSON.stringify(d.data.customers));
+      if(d.data.bills && d.data.bills.length) localStorage.setItem('dairy_bills', JSON.stringify(d.data.bills));
+      if(d.data.breeds && d.data.breeds.length) localStorage.setItem('dairy_breeds', JSON.stringify(d.data.breeds));
+      if(d.data.settings) localStorage.setItem('dairy_settings', JSON.stringify(d.data.settings));
+      if(d.data.aiHistory && d.data.aiHistory.length) localStorage.setItem('dairy_ai_history', JSON.stringify(d.data.aiHistory));
+      if(d.data.ledger && d.data.ledger.length) localStorage.setItem('dairy_ledger', JSON.stringify(d.data.ledger));
+      lastSyncTime = new Date();
+      updateLastSyncText();
+      hideLoading();
+      return true;
+    } else {
+      console.error('Pull response:', d);
+      showMsg('sheets-msg', '⚠️ Pull failed: '+(d.msg||'Unknown error — check Sync Token'), 'err');
+    }
+  } catch(e){
+    console.error('Pull error', e);
+    showMsg('sheets-msg', '❌ Pull error: '+e.message+'. Check URL & token.', 'err');
+  }
+  hideLoading();
+  return false;
+}
+
+async function pushToSheets(){
+  const url = DB.sheetsUrl;
+  if(!url){ _dirty=false; return; }
+  try {
+    const body = {
+      action:'push',
+      token: DB.syncToken,
+      customers: DB.customers,
+      bills: DB.bills,
+      breeds: DB.breeds,
+      settings: [DB.settings],
+      aiHistory: DB.aiHistory,
+      ledger: DB.ledger
+    };
+    const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const d = await r.json();
+    if(d.ok){ _dirty=false; lastSyncTime=new Date(); updateLastSyncText(); }
+    else { console.error('Push failed:', d); }
+  } catch(e){ console.error('Push error',e); }
+}
+
+async function syncNow(){
+  if(!DB.sheetsUrl){ showMsg('sheets-msg','No Google Sheets URL configured','err'); return; }
+  showLoading('Syncing…');
+  await pullFromSheets();
+  if(_dirty) await pushToSheets();
+  hideLoading();
+  refreshAllViews();
+}
+
+function updateSyncBadge(ok, text){
+  const dot = document.getElementById('sync-status-dot');
+  const txt = document.getElementById('sync-status-text');
+  if(dot){ dot.style.background = ok ? '#4caf50' : '#e53935'; }
+  if(txt){ txt.textContent = text; }
+}
+
+function updateLastSyncText(){
+  const el = document.getElementById('last-sync-text');
+  if(!el) return;
+  if(!lastSyncTime){ el.textContent='Sync'; return; }
+  const mins = Math.round((Date.now()-lastSyncTime.getTime())/60000);
+  el.textContent = mins < 1 ? 'Just synced' : `${mins}m ago`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOADING / UI HELPERS
+// ═══════════════════════════════════════════════════════════
+function showLoading(text){ document.getElementById('loading-overlay').classList.remove('hidden'); if(text) document.getElementById('loading-text').textContent=text; }
+function hideLoading(){ document.getElementById('loading-overlay').classList.add('hidden'); }
+function showMsg(id, text, type='ok'){
+  const el=document.getElementById(id); if(!el) return;
+  el.className=type==='ok'?'msg-ok':'msg-err'; el.textContent=text;
+  setTimeout(()=>el.textContent='',3500);
+}
+function qs(id){ return document.getElementById(id); }
+function fmt(n){ return '₹'+Number(n||0).toLocaleString('en-IN'); }
+function initials(name){ return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+
+// ═══════════════════════════════════════════════════════════
+// SETUP & AUTH
+// ═══════════════════════════════════════════════════════════
+function copyAppsScript(){
+  const code = APPS_SCRIPT_CODE.trim();
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(code)
+      .then(()=>{ alert('✅ Apps Script code copied!\nNow go to script.google.com and paste it.'); })
+      .catch(()=>{ showCodeFallback(code); });
+  } else {
+    showCodeFallback(code);
+  }
+}
+
+function showCodeFallback(code){
+  let overlay = document.getElementById('code-copy-overlay');
+  if(!overlay){
+    overlay = document.createElement('div');
+    overlay.id = 'code-copy-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem';
+    overlay.innerHTML = `
+      <div style="background:white;border-radius:12px;padding:20px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:700;font-size:1rem">📋 Apps Script Code</div>
+        <div style="font-size:0.78rem;color:#666;line-height:1.4">Tap the box below → long-press → Select All → Copy.<br>Then go to <b>script.google.com</b> and paste.</div>
+        <textarea id="code-copy-ta" readonly style="flex:1;min-height:220px;font-size:10.5px;font-family:monospace;border:1.5px solid #ccc;border-radius:8px;padding:10px;resize:none;-webkit-user-select:all;user-select:all"></textarea>
+        <button onclick="tryCopyFromTA()" style="background:#1a5c2a;color:white;border:none;border-radius:8px;padding:13px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit">📋 Copy to Clipboard</button>
+        <button onclick="document.getElementById('code-copy-overlay').remove()" style="background:#f0f0f0;color:#333;border:none;border-radius:8px;padding:10px;font-size:0.88rem;cursor:pointer;font-family:inherit">Close</button>
+      </div>`;
+    document.body.appendChild(overlay);
+  }
+  const ta = document.getElementById('code-copy-ta');
+  ta.value = code;
+  setTimeout(()=>{ ta.focus(); ta.select(); },100);
+}
+
+function tryCopyFromTA(){
+  const ta = document.getElementById('code-copy-ta');
+  ta.select();
+  try {
+    const ok = document.execCommand('copy');
+    if(ok){ alert('✅ Copied! Now paste at script.google.com'); document.getElementById('code-copy-overlay').remove(); }
+    else { alert('Please long-press the text box → Select All → Copy manually'); }
+  } catch(e){ alert('Please long-press the text box → Select All → Copy manually'); }
+}
+
+function saveSetup(){
+  const url = qs('setup-url').value.trim();
+  const key = qs('setup-apikey').value.trim();
+  const tok = qs('setup-synctoken').value.trim();
+  if(!url && !key){ showMsg('setup-msg','Please enter at least one setting','err'); return; }
+  if(url) DB.sheetsUrl = url;
+  if(key) DB.apiKey = key;
+  if(tok) DB.syncToken = tok;
+  showMsg('setup-msg','Settings saved!','ok');
+  setTimeout(()=>showLogin(), 1200);
+}
+
+function skipSetup(){ showLogin(); }
+function goToSetup(){ showScreen('setup-screen'); }
+
+async function showLogin(){
+  showScreen('login-screen');
+  const url = DB.sheetsUrl;
+  if(url){ await pingSheets(); } else { updateSyncBadge(false,'Local only'); }
+}
+
+function login(role){
+  if(role==='delivery'){ showScreen('delivery-screen'); renderDelivery(); }
+  else if(role==='father'){ showScreen('parent-screen'); renderParent(); }
+  else { showScreen('owner-screen'); refreshAllViews(); if(DB.sheetsUrl) pullFromSheets().then(()=>refreshAllViews()); }
+}
+
+function logout(){ showLogin(); }
+
+function showScreen(id){
+  ['splash','setup-screen','login-screen','delivery-screen','parent-screen','owner-screen']
+    .forEach(s=>{ const el=qs(s); if(el){ el.classList.toggle('hidden', s!==id); } });
+}
+
+// ═══════════════════════════════════════════════════════════
+// OWNER NAV
+// ═══════════════════════════════════════════════════════════
+function ownerTab(name){
+  document.querySelectorAll('.owner-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const tab = qs('tab-'+name); if(tab) tab.classList.add('active');
+  const btn = qs('nav-'+name); if(btn) btn.classList.add('active');
+  if(name==='dashboard') renderDashboard();
+  if(name==='customers') renderCustomers();
+  if(name==='billing') renderBilling();
+  if(name==='ledger') renderLedger();
+  if(name==='ai') renderAIHistory();
+  if(name==='settings') renderSettings();
+}
+
+function refreshAllViews(){ renderDashboard(); renderCustomers(); renderBilling(); renderLedger(); }
+
+// ═══════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════
+function renderDashboard(){
+  const custs = DB.customers;
+  const bills = DB.bills;
+  const s = DB.settings;
+  const ledger = DB.ledger;
+
+  let totalDue=0, totalCollected=0, stopped=0;
+  custs.forEach(c=>{
+    const bal = DB.customerBalance(c.id);
+    if(bal>0) totalDue+=bal;
+    stopped += c.stopped==='yes'?1:0;
+  });
+  bills.filter(b=>b.month===s.billMonth).forEach(b=>{ totalCollected+=Number(b.amountPaid||0); });
+
+  const pendingLoans = ledger.filter(l=>l.type==='loan'&&l.status!=='paid').reduce((s,l)=>s+Number(l.amount||0),0);
+
+  qs('dash-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-val red">${fmt(totalDue)}</div><div class="stat-label">Total outstanding</div></div>
+    <div class="stat-card"><div class="stat-val green">${fmt(totalCollected)}</div><div class="stat-label">Collected this month</div></div>
+    <div class="stat-card"><div class="stat-val">${custs.length}</div><div class="stat-label">Total customers</div></div>
+    <div class="stat-card"><div class="stat-val red">${stopped}</div><div class="stat-label">Stopped deliveries</div></div>
+  `;
+
+  qs('dash-month').textContent = s.billMonth;
+
+  // Top overdue
+  const overdue = custs.map(c=>({c, bal:DB.customerBalance(c.id)})).filter(x=>x.bal>0).sort((a,b)=>b.bal-a.bal).slice(0,5);
+  qs('dash-overdue').innerHTML = overdue.length
+    ? overdue.map(x=>`<div class="payment-row"><div><div class="payment-name">${x.c.name}</div><div class="payment-meta">${x.c.area}</div></div><div class="payment-amt" style="color:var(--red)">${fmt(x.bal)}</div></div>`).join('')
+    : '<div class="empty-state">No outstanding dues 🎉</div>';
+
+  // Recent payments
+  const recent = [...bills].sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,5);
+  qs('dash-recent').innerHTML = recent.length
+    ? recent.map(b=>{ const c=custs.find(x=>x.id===b.custId); return `<div class="payment-row"><div><div class="payment-name">${c?c.name:'?'}</div><div class="payment-meta">${b.month} · ${b.method||'Cash'}</div></div><div class="payment-amt">${fmt(b.amountPaid)}</div></div>`; }).join('')
+    : '<div class="empty-state">No payments recorded yet</div>';
+
+  // Ledger snap
+  const pendingSalaries = ledger.filter(l=>l.type==='salary'&&l.status==='pending').reduce((s,l)=>s+Number(l.amount||0),0);
+  const pendingOrders = ledger.filter(l=>l.type==='order'&&l.status==='pending').reduce((s,l)=>s+Number(l.amount||0),0);
+  qs('dash-ledger-snap').innerHTML=`
+    <div class="payment-row"><div class="payment-name">💸 Loans outstanding</div><div class="payment-amt" style="color:var(--amber)">${fmt(pendingLoans)}</div></div>
+    <div class="payment-row"><div class="payment-name">👷 Salaries due</div><div class="payment-amt" style="color:var(--amber)">${fmt(pendingSalaries)}</div></div>
+    <div class="payment-row"><div class="payment-name">🏭 Dairy orders pending</div><div class="payment-amt" style="color:var(--blue)">${fmt(pendingOrders)}</div></div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+// CUSTOMERS
+// ═══════════════════════════════════════════════════════════
+function renderCustomers(search=''){
+  const custs = DB.customers;
+  const areas = [...new Set(custs.map(c=>c.area))];
+  const fRow = qs('area-filters');
+  if(fRow.children.length===0){
+    fRow.innerHTML = `<button class="filter-pill active" onclick="filterArea(this,'')">All</button>`
+      + areas.map(a=>`<button class="filter-pill" onclick="filterArea(this,'${a}')">${a}</button>`).join('');
+  }
+  const q = search.toLowerCase();
+  const activeArea = fRow.querySelector('.filter-pill.active')?.textContent;
+  const filtered = custs.filter(c=>{
+    const matchArea = !activeArea||activeArea==='All'||c.area===activeArea;
+    const matchQ = !q||c.name.toLowerCase().includes(q)||c.area.toLowerCase().includes(q)||c.phone.includes(q)||(c.breed||'').toLowerCase().includes(q);
+    return matchArea && matchQ;
+  });
+  qs('customers-list').innerHTML = filtered.map(c=>{
+    const bal = DB.customerBalance(c.id);
+    const badge = c.stopped==='yes'?`<span class="badge badge-stop">STOPPED</span>`
+      :bal>0?`<span class="badge badge-red">${fmt(bal)} due</span>`
+      :`<span class="badge badge-green">All clear</span>`;
+    return `<div class="cust-row" onclick="openCustModal('${c.id}')">
+      <div class="cust-avatar">${initials(c.name)}</div>
+      <div style="flex:1"><div class="cust-name">${c.name}</div><div class="cust-sub">${c.area} · ${c.breed||'?'} · ${c.ltrs}L/day</div>${badge}</div>
+    </div>`;
+  }).join('') || '<div class="empty-state">No customers found</div>';
+}
+
+function filterArea(btn, area){
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderCustomers(qs('cust-search')?.value||'');
+}
+
+function openCustModal(id){
+  const c = DB.customers.find(x=>x.id===id); if(!c) return;
+  const bal = DB.customerBalance(id);
+  const cBills = DB.bills.filter(b=>b.custId===id).sort((a,b)=>b.month.localeCompare(a.month));
+  qs('cust-modal-body').innerHTML=`
+    <div style="margin-bottom:14px">
+      <div style="font-size:1.2rem;font-weight:700">${c.name}</div>
+      <div style="font-size:0.8rem;color:var(--text-muted)">${c.area} · ${c.breed||'?'} · ${c.ltrs}L/day</div>
+      <div style="font-size:1.1rem;font-weight:700;color:${bal>0?'var(--red)':'var(--green)'};margin-top:8px">${bal>0?fmt(bal)+' outstanding':'All paid ✅'}</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      <a href="https://wa.me/${c.phone}" class="mini-btn" target="_blank">📲 WhatsApp</a>
+      <a href="tel:${c.phone}" class="mini-btn">📞 Call</a>
+      <button class="mini-btn stop-btn" onclick="toggleStop('${id}');closeCustModal()">${c.stopped==='yes'?'▶ Resume':'🚫 Stop'}</button>
+      <button class="mini-btn stop-btn" onclick="deleteCustomer('${id}');closeCustModal()">🗑 Delete</button>
+    </div>
+    <div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">Bill history</div>
+    ${cBills.map(b=>`<div class="payment-row"><div><div class="payment-name">${b.month}</div><div class="payment-meta">${b.method||'Cash'} · ${b.ltrs}L/day</div></div><div><div class="payment-amt">${fmt(b.amountPaid)} paid</div><div style="font-size:0.72rem;color:${(b.totalBill-b.amountPaid)>0?'var(--red)':'var(--green)'}">${fmt(b.totalBill)} total</div></div></div>`).join('')||'<div class="empty-state">No bills yet</div>'}
+  `;
+  qs('cust-modal').classList.remove('hidden');
+}
+
+function closeCustModal(){ qs('cust-modal').classList.add('hidden'); }
+
+function toggleStop(id){
+  const custs = DB.customers;
+  const c = custs.find(x=>x.id===id); if(!c) return;
+  c.stopped = c.stopped==='yes'?'no':'yes';
+  DB.customers = custs;
+  renderCustomers(); renderDelivery(); scheduleSyncPush();
+}
+
+function deleteCustomer(id){
+  if(!confirm('Delete this customer? This cannot be undone.')) return;
+  DB.customers = DB.customers.filter(x=>x.id!==id);
+  DB.bills = DB.bills.filter(b=>b.custId!==id);
+  renderCustomers(); renderDashboard(); scheduleSyncPush();
+}
+
+function showAddCustomer(){
+  const card = qs('add-customer-card');
+  card.style.display = card.style.display==='none'?'block':'none';
+  if(card.style.display==='block'){
+    ownerTab('settings');
+    const breedSel = qs('nc-breed');
+    breedSel.innerHTML = DB.breeds.map(b=>`<option value="${b.name}">${b.emoji} ${b.name} (₹${b.rate}/L)</option>`).join('');
+  }
+}
+
+function addCustomer(){
+  const name=qs('nc-name').value.trim(), phone=qs('nc-phone').value.trim(),
+    area=qs('nc-area').value.trim(), breed=qs('nc-breed').value,
+    ltrs=parseFloat(qs('nc-ltrs').value||0), crate=qs('nc-crate').value,
+    stopped=qs('nc-stopped').value;
+  if(!name||!phone||!area||!breed||!ltrs){ showMsg('nc-msg','Fill all required fields','err'); return; }
+  const custs = DB.customers;
+  custs.push({ id:DB.newId(), name, phone, area, breed, ltrs, crate:crate||'', stopped, addedAt:Date.now() });
+  DB.customers = custs;
+  ['nc-name','nc-phone','nc-area','nc-ltrs','nc-crate'].forEach(id=>{ const el=qs(id); if(el) el.value=''; });
+  showMsg('nc-msg','Customer added!','ok');
+  renderCustomers(); renderDashboard(); scheduleSyncPush();
+}
+
+async function pickContact(){
+  if(!('contacts' in navigator && 'ContactsManager' in window)){ alert("Contact picker not available on this browser/device."); return; }
+  try {
+    const contacts = await navigator.contacts.select(['name','tel'],{multiple:false});
+    if(contacts.length){ qs('nc-name').value=contacts[0].name[0]||''; qs('nc-phone').value=(contacts[0].tel[0]||'').replace(/\D/g,''); }
+  } catch(e){ alert('Could not access contacts: '+e.message); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// BILLING
+// ═══════════════════════════════════════════════════════════
+function renderBilling(){
+  const sel = qs('bill-cust-sel');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">-- select customer --</option>'
+    + DB.customers.map(c=>`<option value="${c.id}">${c.name} (${c.area})</option>`).join('');
+  if(cur) sel.value = cur;
+}
+
+function loadBillCalc(){
+  const id = qs('bill-cust-sel').value; if(!id){ qs('bill-calc-body').style.display='none'; return; }
+  const c = DB.customers.find(x=>x.id===id); if(!c) return;
+  const s = DB.settings;
+  const prevBill = DB.bills.find(b=>b.custId===id&&b.month===s.billMonth);
+  qs('bill-cust-display').textContent = c.name;
+  const breedSel = qs('bc-breed');
+  breedSel.innerHTML = DB.breeds.map(b=>`<option value="${b.name}" ${b.name===c.breed?'selected':''}>${b.emoji} ${b.name} (₹${b.rate}/L)</option>`).join('');
+  qs('bc-ltrs').value = prevBill?prevBill.ltrs:c.ltrs;
+  qs('bc-abs').value = prevBill?prevBill.absDays:0;
+  qs('bc-paid').value = prevBill?prevBill.amountPaid:0;
+  qs('bill-calc-body').style.display='block';
+  calcBill();
+}
+
+function calcBill(){
+  const id = qs('bill-cust-sel').value; if(!id) return;
+  const c = DB.customers.find(x=>x.id===id); if(!c) return;
+  const s = DB.settings;
+  const breed = DB.breeds.find(b=>b.name===qs('bc-breed').value);
+  const rate = c.crate ? Number(c.crate) : (breed?breed.rate:70);
+  const ltrs = parseFloat(qs('bc-ltrs').value||0);
+  const abs = parseInt(qs('bc-abs').value||0);
+  const days = s.billDays - abs;
+  const total = Math.round(ltrs * rate * days);
+  const paid = parseFloat(qs('bc-paid').value||0);
+  const balance = total - paid;
+  const prevBal = DB.bills.filter(b=>b.custId===id&&b.month<s.billMonth).reduce((s,b)=>s+(b.totalBill-b.amountPaid),0);
+  const grandBalance = balance + prevBal;
+
+  qs('bc-abs-note').textContent = abs>0?`${abs} absent days deducted from ${s.billDays} days`:'';
+  qs('bc-breakdown').innerHTML=`
+    <div class="brow"><span>Litres/day</span><span>${ltrs}L</span></div>
+    <div class="brow"><span>Rate</span><span>₹${rate}/L</span></div>
+    <div class="brow"><span>Days</span><span>${days}</span></div>
+    <div class="brow total"><span>This month's bill</span><span>${fmt(total)}</span></div>
+    ${prevBal>0?`<div class="brow" style="color:var(--red)"><span>Previous balance</span><span>+ ${fmt(prevBal)}</span></div>`:''}
+  `;
+  qs('bc-balance').innerHTML=`
+    <div class="brow balance-row" style="color:${grandBalance>0?'var(--red)':'var(--green)'}">
+      <span>Balance due</span><span>${fmt(grandBalance)}</span>
+    </div>
+  `;
+  // WhatsApp
+  const settings = DB.settings;
+  const msg=encodeURIComponent(`🐄 *${settings.bizName}*\nDear ${c.name},\n\nYour milk bill for *${s.billMonth}*:\n• ${ltrs}L/day × ₹${rate}/L × ${days} days = *${fmt(total)}*\n• Amount paid: ${fmt(paid)}\n• *Balance due: ${fmt(grandBalance)}*\n\nPay via GPay: ${settings.gpay}\nPaytm: ${settings.paytm}\n\nThank you! 🙏`);
+  qs('bc-wa-btn').onclick=()=>window.open(`https://wa.me/${c.phone}?text=${msg}`,'_blank');
+}
+
+function saveBillCalc(){
+  const id = qs('bill-cust-sel').value; if(!id) return;
+  const c = DB.customers.find(x=>x.id===id); if(!c) return;
+  const s = DB.settings;
+  const breed = DB.breeds.find(b=>b.name===qs('bc-breed').value);
+  const rate = c.crate ? Number(c.crate) : (breed?breed.rate:70);
+  const ltrs = parseFloat(qs('bc-ltrs').value||0);
+  const abs = parseInt(qs('bc-abs').value||0);
+  const days = s.billDays - abs;
+  const total = Math.round(ltrs * rate * days);
+  const paid = parseFloat(qs('bc-paid').value||0);
+  const method = document.querySelector('#tab-billing .method-btn.active')?.dataset.method||'Cash';
+  let bills = DB.bills;
+  const idx = bills.findIndex(b=>b.custId===id&&b.month===s.billMonth);
+  const entry = { id:idx>=0?bills[idx].id:DB.newId(), custId:id, month:s.billMonth, breed:qs('bc-breed').value, ltrs, absDays:abs, days, rate, totalBill:total, amountPaid:paid, method, savedAt:Date.now() };
+  if(idx>=0) bills[idx]=entry; else bills.push(entry);
+  DB.bills=bills; renderDashboard(); showMsg('bc-msg','Bill saved!','ok'); scheduleSyncPush();
+}
+
+// ═══════════════════════════════════════════════════════════
+// LEDGER MODULE
+// ═══════════════════════════════════════════════════════════
+let currentLedgerTab = 'loans';
+
+const LEDGER_CONFIG = {
+  loans:     { label:'Loan', icon:'💸', fields:['personName','amount','date','dueDate','status','notes'], statuses:['pending','partial','paid'] },
+  salaries:  { label:'Salary', icon:'👷', fields:['personName','amount','month','status','notes'], statuses:['pending','paid'] },
+  shipments: { label:'Shipment', icon:'🚚', fields:['description','amount','vendor','date','status','notes'], statuses:['pending','received','paid'] },
+  orders:    { label:'Dairy Order', icon:'🏭', fields:['vendor','amount','litres','date','status','notes'], statuses:['pending','delivered','paid'] },
+  expenses:  { label:'Expense', icon:'💼', fields:['description','amount','category','date','notes'], statuses:['paid'] },
+};
+
+function switchLedgerTab(tab){
+  currentLedgerTab = tab;
+  document.querySelectorAll('.ledger-tab-pill').forEach(p=>p.classList.remove('active'));
+  qs('ltab-'+tab)?.classList.add('active');
+  document.querySelectorAll('.ledger-section').forEach(s=>s.classList.remove('active'));
+  qs('ls-'+tab)?.classList.add('active');
+  renderLedgerSection(tab);
+}
+
+function renderLedger(){ renderLedgerSection(currentLedgerTab); }
+
+function renderLedgerSection(tab){
+  const items = DB.ledger.filter(l=>l.type===tab).sort((a,b)=>(b.date||b.month||'').localeCompare(a.date||a.month||''));
+  const listEl = qs('ll-'+tab+'-list');
+  const sumEl = qs('lsum-'+tab);
+  if(!listEl) return;
+  const totalAmt = items.reduce((s,l)=>s+Number(l.amount||0),0);
+  const paidAmt = items.filter(l=>l.status==='paid').reduce((s,l)=>s+Number(l.amount||0),0);
+  const pendingAmt = totalAmt - paidAmt;
+  sumEl.innerHTML=`
+    <div class="lsb-card"><div class="lsb-val">${fmt(totalAmt)}</div><div class="lsb-label">Total</div></div>
+    <div class="lsb-card"><div class="lsb-val" style="color:var(--green)">${fmt(paidAmt)}</div><div class="lsb-label">Paid</div></div>
+    <div class="lsb-card"><div class="lsb-val" style="color:var(--amber)">${fmt(pendingAmt)}</div><div class="lsb-label">Pending</div></div>
+  `;
+  listEl.innerHTML = items.map(l=>{
+    const statusClass = l.status==='paid'?'status-paid':l.status==='partial'?'status-partial':'status-pending';
+    const mainLabel = l.personName||l.description||l.vendor||l.category||'-';
+    const sub = [l.date||l.month, l.notes].filter(Boolean).join(' · ');
+    const amtColor = l.status==='paid'?'var(--green)':l.status==='partial'?'var(--blue)':'var(--amber)';
+    return `<div class="ledger-item">
+      <div class="ledger-item-head">
+        <div><div class="ledger-item-name">${mainLabel}</div><div class="ledger-item-sub">${sub}</div></div>
+        <div class="ledger-item-amt">
+          <div style="font-size:1rem;font-weight:700;color:${amtColor}">${fmt(l.amount)}</div>
+          <div class="ledger-status ${statusClass}">${l.status||'pending'}</div>
+        </div>
+      </div>
+      ${l.type==='loan'&&l.dueDate?`<div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Due: ${l.dueDate}</div>`:''}
+      ${l.type==='orders'&&l.litres?`<div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">${l.litres}L</div>`:''}
+      <div style="margin-top:8px;display:flex;gap:6px">
+        ${l.status!=='paid'?`<button class="mini-btn" onclick="markLedgerPaid('${l.id}')">✅ Mark paid</button>`:''}
+        <button class="mini-btn stop-btn" onclick="deleteLedgerItem('${l.id}')">🗑 Delete</button>
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty-state">No entries yet. Tap + Add to record one.</div>';
+}
+
+function markLedgerPaid(id){
+  const ledger = DB.ledger;
+  const item = ledger.find(l=>l.id===id); if(!item) return;
+  item.status='paid'; DB.ledger=ledger;
+  renderLedgerSection(currentLedgerTab); renderDashboard(); scheduleSyncPush();
+}
+
+function deleteLedgerItem(id){
+  if(!confirm('Delete this entry?')) return;
+  DB.ledger = DB.ledger.filter(l=>l.id!==id);
+  renderLedgerSection(currentLedgerTab); renderDashboard(); scheduleSyncPush();
+}
+
+function showLedgerAdd(){
+  const tab = currentLedgerTab;
+  const cfg = LEDGER_CONFIG[tab];
+  const modal = qs('ledger-modal');
+  qs('ledger-modal-title').textContent = `Add ${cfg.icon} ${cfg.label}`;
+  const fields = {
+    personName: `<label>Person / Party name</label><input type="text" id="lf-personName" placeholder="Name">`,
+    description: `<label>Description</label><input type="text" id="lf-description" placeholder="What is this for?">`,
+    vendor: `<label>Vendor / Supplier</label><input type="text" id="lf-vendor" placeholder="Supplier name">`,
+    category: `<label>Category</label><input type="text" id="lf-category" placeholder="e.g. Fuel, Equipment">`,
+    amount: `<label>Amount (₹)</label><input type="number" id="lf-amount" placeholder="0">`,
+    litres: `<label>Litres (if applicable)</label><input type="number" id="lf-litres" placeholder="0">`,
+    date: `<label>Date</label><input type="date" id="lf-date" value="${new Date().toISOString().slice(0,10)}">`,
+    dueDate: `<label>Due date</label><input type="date" id="lf-dueDate">`,
+    month: `<label>Month</label><input type="month" id="lf-month" value="${DB.settings.billMonth}">`,
+    status: `<label>Status</label><select id="lf-status">${cfg.statuses.map(s=>`<option value="${s}">${s}</option>`).join('')}</select>`,
+    notes: `<label>Notes</label><textarea id="lf-notes" rows="2" placeholder="Optional notes"></textarea>`,
+  };
+  qs('ledger-modal-body').innerHTML = cfg.fields.map(f=>fields[f]||'').join('')
+    + `<button class="submit-btn" onclick="saveLedgerEntry('${tab}')">Save</button><div id="lf-msg"></div>`;
+  modal.classList.remove('hidden');
+}
+
+function closeLedgerModal(){ qs('ledger-modal').classList.add('hidden'); }
+
+function saveLedgerEntry(tab){
+  const cfg = LEDGER_CONFIG[tab];
+  const entry = { id:DB.newId(), type:tab };
+  cfg.fields.forEach(f=>{
+    const el=qs('lf-'+f); if(el) entry[f]=el.value;
+  });
+  if(!entry.amount){ showMsg('lf-msg','Amount is required','err'); return; }
+  const ledger = DB.ledger;
+  ledger.push(entry); DB.ledger=ledger;
+  closeLedgerModal();
+  renderLedgerSection(tab); renderDashboard(); scheduleSyncPush();
+}
+
+// ═══════════════════════════════════════════════════════════
+// AI READ (text + screenshot)
+// ═══════════════════════════════════════════════════════════
+let currentAITab = 'text';
+let aiImageData = null;
+
+function switchAITab(tab, btn){
+  currentAITab = tab;
+  document.querySelectorAll('.tab-switch button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  qs('ai-text-tab').classList.toggle('hidden', tab!=='text');
+  qs('ai-screenshot-tab').classList.toggle('hidden', tab!=='screenshot');
+}
+
+function previewImage(input){
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const img = qs('ai-img-preview');
+    img.src = e.target.result;
+    img.classList.remove('hidden');
+    aiImageData = e.target.result.split(',')[1]; // base64
+  };
+  reader.readAsDataURL(file);
+}
+
+async function runAIRead(){
+  const apiKey = DB.apiKey;
+  if(!apiKey){ alert('Please add your Anthropic API key in Settings → Google Sheets Sync → API Key'); return; }
+  const custId = qs('ai-cust-sel').value;
+  const custs = DB.customers;
+  const cust = custs.find(c=>c.id===custId);
+  const btn = qs('ai-read-btn');
+  btn.innerHTML='<span class="spinner"></span>Reading…'; btn.disabled=true;
+
+  let messages;
+  const systemPrompt = `You are a dairy billing assistant for Ecchanna Dairy Services in India. Extract payment/order info from messages or screenshots. 
+Respond ONLY with JSON (no markdown, no explanation):
+{
+  "amount": number or null,
+  "paymentMethod": "Cash"|"GPay"|"Paytm"|"Other UPI"|null,
+  "absentDays": number or null,
+  "breedChange": string or null,
+  "notes": string,
+  "confidence": "high"|"medium"|"low"
+}
+Customer context: ${cust?`Name: ${cust.name}, Area: ${cust.area}, Breed: ${cust.breed}`:'Not specified'}`;
+
+  if(currentAITab==='screenshot' && aiImageData){
+    messages = [{ role:'user', content:[
+      { type:'image', source:{ type:'base64', media_type:'image/jpeg', data:aiImageData }},
+      { type:'text', text:'Extract payment or dairy-related info from this screenshot.' }
+    ]}];
+  } else {
+    const msg = qs('ai-msg-inp').value.trim();
+    if(!msg){ btn.innerHTML='🤖 Read & detect'; btn.disabled=false; return; }
+    messages = [{ role:'user', content: msg }];
+  }
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:400, system:systemPrompt, messages })
+    });
+    const data = await resp.json();
+    const raw = data.content?.[0]?.text||'{}';
+    let parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); } catch(e){ parsed={}; }
+    displayAIResult(parsed, custId);
+    // Save to history
+    const hist = DB.aiHistory;
+    hist.unshift({ id:DB.newId(), ts:Date.now(), custId, custName:cust?.name||'?', ...parsed, inputType:currentAITab });
+    if(hist.length>30) hist.pop();
+    DB.aiHistory=hist; renderAIHistory(); scheduleSyncPush();
+  } catch(e){
+    qs('ai-result-box').innerHTML=`<div class="msg-err">Error: ${e.message}</div>`;
+  }
+  btn.innerHTML='🤖 Read & detect'; btn.disabled=false;
+}
+
+function displayAIResult(parsed, custId){
+  const cust = DB.customers.find(c=>c.id===custId);
+  const confColor = parsed.confidence==='high'?'var(--green)':parsed.confidence==='medium'?'var(--amber)':'var(--red)';
+  let html = `<div class="ai-result-card">
+    <div class="ai-result-title">🤖 AI Detection — <span style="color:${confColor}">${parsed.confidence||'?'} confidence</span></div>
+    ${parsed.amount?`<div class="ai-row">💰 Amount: <span>${fmt(parsed.amount)}</span></div>`:''}
+    ${parsed.paymentMethod?`<div class="ai-row">💳 Method: <span>${parsed.paymentMethod}</span></div>`:''}
+    ${parsed.absentDays?`<div class="ai-row">📅 Absent days: <span>${parsed.absentDays}</span></div>`:''}
+    ${parsed.breedChange?`<div class="ai-row">🐄 Breed change: <span>${parsed.breedChange}</span></div>`:''}
+    ${parsed.notes?`<div class="ai-row">📝 Notes: <span>${parsed.notes}</span></div>`:''}
+  `;
+  if(cust && parsed.amount){
+    html += `<button class="submit-btn" style="margin-top:10px" onclick="applyAIPayment('${custId}',${parsed.amount},'${parsed.paymentMethod||'Cash'}',${parsed.absentDays||0})">✅ Apply this payment</button>`;
+  }
+  html+='</div>';
+  qs('ai-result-box').innerHTML=html;
+}
+
+function applyAIPayment(custId, amount, method, absDays){
+  const s = DB.settings;
+  let bills = DB.bills;
+  const idx = bills.findIndex(b=>b.custId===custId&&b.month===s.billMonth);
+  if(idx>=0){
+    bills[idx].amountPaid = (Number(bills[idx].amountPaid||0)+Number(amount));
+    if(absDays) bills[idx].absDays = (Number(bills[idx].absDays||0)+Number(absDays));
+    bills[idx].method = method;
+    DB.bills=bills;
+  } else {
+    const cust = DB.customers.find(c=>c.id===custId);
+    if(!cust) return;
+    const breed = DB.breeds.find(b=>b.name===cust.breed);
+    const rate = cust.crate?Number(cust.crate):(breed?breed.rate:70);
+    const days = s.billDays - (absDays||0);
+    const totalBill = Math.round(cust.ltrs*rate*days);
+    bills.push({ id:DB.newId(), custId, month:s.billMonth, breed:cust.breed, ltrs:cust.ltrs, absDays:absDays||0, days, rate, totalBill, amountPaid:Number(amount), method, savedAt:Date.now() });
+    DB.bills=bills;
+  }
+  renderDashboard(); scheduleSyncPush();
+  qs('ai-result-box').innerHTML+='<div class="msg-ok">✅ Payment applied!</div>';
+}
+
+function renderAIHistory(){
+  const hist = DB.aiHistory;
+  qs('ai-history-list').innerHTML = hist.slice(0,10).map(h=>`
+    <div class="payment-row">
+      <div><div class="payment-name">${h.custName||'Unknown'} · ${h.inputType==='screenshot'?'📸':'💬'}</div>
+      <div class="payment-meta">${new Date(h.ts).toLocaleDateString()} · ${h.notes||'-'}</div></div>
+      <div class="payment-amt">${h.amount?fmt(h.amount):'-'}</div>
+    </div>
+  `).join('') || '<div class="empty-state">No AI reads yet</div>';
+  const sel = qs('ai-cust-sel');
+  if(sel.options.length<=1){
+    sel.innerHTML='<option value="">-- optional --</option>'+DB.customers.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════════
+function renderSettings(){
+  const s = DB.settings;
+  qs('gpay-num').value=s.gpay; qs('paytm-num').value=s.paytm; qs('biz-name-inp').value=s.bizName;
+  qs('bill-month-inp').value=s.billMonth; qs('bill-days-inp').value=s.billDays;
+  qs('sheets-url-inp').value=DB.sheetsUrl; qs('apikey-inp').value=DB.apiKey;
+  if(qs('sync-token-inp')) qs('sync-token-inp').value=DB.syncToken;
+  renderBreeds();
+  const nc = qs('nc-breed');
+  if(nc) nc.innerHTML=DB.breeds.map(b=>`<option value="${b.name}">${b.emoji} ${b.name}</option>`).join('');
+  // Sync status
+  const bar = qs('sheets-sync-status');
+  if(DB.sheetsUrl){ bar.innerHTML=`<span class="sync-ok">✅ Connected</span><span style="margin-left:auto;font-size:0.72rem">${lastSyncTime?'Last: '+lastSyncTime.toLocaleTimeString():'Not synced yet'}</span>`; }
+  else{ bar.innerHTML=`<span class="sync-warn">⚠️ Not connected – data stored locally only</span>`; }
+}
+
+function saveSheetsSettings(){
+  DB.sheetsUrl = qs('sheets-url-inp').value.trim();
+  DB.apiKey = qs('apikey-inp').value.trim();
+  if(qs('sync-token-inp')) DB.syncToken = qs('sync-token-inp').value.trim() || 'ecchanna2025dairy';
+  showMsg('sheets-msg','Settings saved! Testing connection…','ok');
+  pingSheets().then(ok=>{
+    if(ok){ showMsg('sheets-msg','✅ Connected to Google Sheets!','ok'); renderSettings(); }
+    else { showMsg('sheets-msg','❌ Could not connect. Check: 1) URL is correct 2) Sync Token matches SECRET_TOKEN in Apps Script 3) Deployment is set to "Anyone"','err'); }
+  });
+}
+
+function savePaymentSettings(){
+  const s=DB.settings;
+  s.gpay=qs('gpay-num').value.trim(); s.paytm=qs('paytm-num').value.trim(); s.bizName=qs('biz-name-inp').value.trim();
+  DB.settings=s; showMsg('pay-set-msg','Saved!','ok'); scheduleSyncPush();
+}
+
+function saveMonthSettings(){
+  const s=DB.settings;
+  s.billMonth=qs('bill-month-inp').value; s.billDays=parseInt(qs('bill-days-inp').value||30);
+  DB.settings=s; showMsg('pay-set-msg','Saved!','ok'); scheduleSyncPush();
+}
+
+function renderBreeds(){
+  qs('breed-settings-list').innerHTML = DB.breeds.map((b,i)=>`
+    <div class="breed-row">
+      <div class="breed-emoji">${b.emoji}</div>
+      <div class="breed-info"><div class="breed-name">${b.name}</div></div>
+      <input type="number" class="breed-rate-inp" value="${b.rate}" onchange="updateBreedRate(${i},this.value)">
+      <span style="font-size:0.75rem;color:var(--text-muted)">₹/L</span>
+      <button class="breed-del" onclick="deleteBreed(${i})">🗑</button>
+    </div>`).join('');
+}
+
+function updateBreedRate(i, val){ const b=DB.breeds; b[i].rate=Number(val); DB.breeds=b; scheduleSyncPush(); }
+function deleteBreed(i){ const b=DB.breeds; b.splice(i,1); DB.breeds=b; renderBreeds(); scheduleSyncPush(); }
+function addBreed(){
+  const name=qs('new-breed-name').value.trim(), rate=qs('new-breed-rate').value, emoji=qs('new-breed-emoji').value||'🐄';
+  if(!name||!rate){ showMsg('breed-msg','Name and rate required','err'); return; }
+  const b=DB.breeds; b.push({name,rate:Number(rate),emoji}); DB.breeds=b;
+  qs('new-breed-name').value=''; qs('new-breed-rate').value=''; qs('new-breed-emoji').value='';
+  renderBreeds(); showMsg('breed-msg','Breed added!','ok'); scheduleSyncPush();
+}
+
+function exportCSV(){
+  const custs=DB.customers; const bills=DB.bills;
+  const rows=[['Name','Area','Breed','Litres','Phone','Month','TotalBill','AmountPaid','Balance','Method']];
+  custs.forEach(c=>{ const cb=bills.filter(b=>b.custId===c.id); if(cb.length){ cb.forEach(b=>rows.push([c.name,c.area,c.breed,c.ltrs,c.phone,b.month,b.totalBill,b.amountPaid,b.totalBill-b.amountPaid,b.method||'Cash'])); } else { rows.push([c.name,c.area,c.breed,c.ltrs,c.phone,'','','','','']); } });
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv); a.download='ecchanna_dairy_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+}
+
+function exportJSON(){
+  const d={customers:DB.customers,bills:DB.bills,breeds:DB.breeds,settings:DB.settings,ledger:DB.ledger};
+  const a=document.createElement('a'); a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(d,null,2)); a.download='ecchanna_backup_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+}
+
+function restoreJSON(){
+  try{ const d=JSON.parse(qs('restore-inp').value);
+    if(d.customers) localStorage.setItem('dairy_customers',JSON.stringify(d.customers));
+    if(d.bills) localStorage.setItem('dairy_bills',JSON.stringify(d.bills));
+    if(d.breeds) localStorage.setItem('dairy_breeds',JSON.stringify(d.breeds));
+    if(d.settings) localStorage.setItem('dairy_settings',JSON.stringify(d.settings));
+    if(d.ledger) localStorage.setItem('dairy_ledger',JSON.stringify(d.ledger));
+    showMsg('restore-msg','Restored!','ok'); refreshAllViews();
+  } catch(e){ showMsg('restore-msg','Invalid JSON','err'); }
+}
+
+function bulkImport(){
+  const lines=qs('bulk-csv').value.trim().split('\n');
+  let count=0;
+  const custs=DB.customers;
+  lines.forEach(line=>{ const p=line.split(','); if(p.length<5) return;
+    custs.push({id:DB.newId(),name:p[0].trim(),phone:p[1].trim(),area:p[2].trim(),breed:p[3].trim(),ltrs:parseFloat(p[4])||1,stopped:'no',addedAt:Date.now()}); count++; });
+  DB.customers=custs; showMsg('import-msg',`Imported ${count} customers`,'ok'); renderCustomers(); scheduleSyncPush();
+}
+
+// ═══════════════════════════════════════════════════════════
+// DELIVERY VIEW
+// ═══════════════════════════════════════════════════════════
+function renderDelivery(){
+  const stopped=DB.customers.filter(c=>c.stopped==='yes');
+  qs('stop-list-container').innerHTML=stopped.map(c=>`
+    <div class="stop-card">
+      <div class="stop-name">${c.name}</div>
+      <div class="stop-area">${c.area}</div>
+      <span class="stop-reason">Delivery stopped</span>
+    </div>`).join('');
+  qs('delivery-ok').classList.toggle('hidden', stopped.length>0);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PARENT VIEW
+// ═══════════════════════════════════════════════════════════
+function renderParent(){
+  const custs=DB.customers;
+  const s=DB.settings;
+  let due=0,paid=0;
+  custs.forEach(c=>{ const b=DB.customerBalance(c.id); if(b>0) due+=b; });
+  DB.bills.filter(b=>b.month===s.billMonth).forEach(b=>paid+=Number(b.amountPaid||0));
+  qs('parent-summary').innerHTML=`<div class="parent-summary">
+    <div class="summary-stat"><div class="summary-val red">${fmt(due)}</div><div class="summary-label">Outstanding</div></div>
+    <div class="summary-stat"><div class="summary-val green">${fmt(paid)}</div><div class="summary-label">Collected</div></div>
+  </div>`;
+  const sel=qs('pr-cust');
+  sel.innerHTML='<option value="">-- select --</option>'+custs.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  // Pending list
+  const pending=custs.map(c=>({c,bal:DB.customerBalance(c.id)})).filter(x=>x.bal>0).sort((a,b)=>b.bal-a.bal);
+  qs('parent-pending-list').innerHTML=pending.map(x=>`<div class="pending-row"><div class="cust-avatar">${initials(x.c.name)}</div><div class="pending-info"><div class="pending-name">${x.c.name}</div><div class="pending-sub">${x.c.area}</div></div><div class="pending-amt">${fmt(x.bal)}</div></div>`).join('')||'<div class="empty-state">All paid ✅</div>';
+  // Remind list
+  const ss=DB.settings;
+  qs('parent-remind-list').innerHTML=pending.map(x=>{
+    const msg=encodeURIComponent(`Namaste ${x.c.name} ji 🙏\nAapka ${ss.bizName} ka dudh ka balance *${fmt(x.bal)}* pending hai.\nGPay: ${ss.gpay}\nPaytm: ${ss.paytm}\nPlease pay kar dijiye. Shukriya! 🐄`);
+    return `<div class="remind-row"><div style="flex:1"><div class="pending-name">${x.c.name}</div><div class="pending-sub">${x.c.area} · ${fmt(x.bal)} due</div></div><a href="https://wa.me/${x.c.phone}?text=${msg}" target="_blank"><button class="wa-small">📲 Send</button></a></div>`;
+  }).join('')||'<div class="empty-state">No pending reminders</div>';
+}
+
+function fillParentBal(){
+  const id=qs('pr-cust').value;
+  const bal=id?DB.customerBalance(id):0;
+  qs('pr-bal').textContent=id?fmt(bal):'Select customer';
+}
+
+function parentRecordPayment(){
+  const id=qs('pr-cust').value, amt=parseFloat(qs('pr-amt').value||0);
+  if(!id||!amt){ showMsg('pr-msg','Select customer and enter amount','err'); return; }
+  const s=DB.settings; const cust=DB.customers.find(c=>c.id===id);
+  const method=document.querySelector('#parent-record .method-btn.active')?.dataset.method||'Cash';
+  let bills=DB.bills;
+  const idx=bills.findIndex(b=>b.custId===id&&b.month===s.billMonth);
+  if(idx>=0){ bills[idx].amountPaid=(Number(bills[idx].amountPaid||0)+amt); bills[idx].method=method; }
+  else{ const breed=DB.breeds.find(b=>b.name===cust?.breed); const rate=cust?.crate?Number(cust.crate):(breed?breed.rate:70); const total=Math.round((cust?.ltrs||1)*rate*s.billDays); bills.push({id:DB.newId(),custId:id,month:s.billMonth,breed:cust?.breed,ltrs:cust?.ltrs||1,absDays:0,days:s.billDays,rate,totalBill:total,amountPaid:amt,method,savedAt:Date.now()}); }
+  DB.bills=bills; showMsg('pr-msg','Payment recorded!','ok'); fillParentBal(); renderParent(); scheduleSyncPush();
+}
+
+function showSection(id){ qs(id)?.classList.remove('hidden'); }
+function hideSection(id){ qs(id)?.classList.add('hidden'); }
+function selectMethod(btn){ btn.closest('.pay-method-row').querySelectorAll('.method-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+
+// ═══════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    qs('splash').style.opacity='0';
+    setTimeout(()=>{
+      qs('splash').classList.add('hidden');
+      if(!DB.sheetsUrl && !localStorage.getItem('dairy_skip_setup')){ showScreen('setup-screen'); }
+      else { showLogin(); }
+    },400);
+  }, 1800);
+
+  // Auto sync push every 5 min
+  setInterval(()=>{ if(_dirty && DB.sheetsUrl) pushToSheets(); }, 5*60*1000);
+  setInterval(updateLastSyncText, 30000);
+});
+</script>
+</body>
+</html>
