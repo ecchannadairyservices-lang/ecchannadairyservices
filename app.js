@@ -205,7 +205,43 @@ function showAddCustomer() {
   populateBreedSelect('nc-breed');
   card.scrollIntoView({ behavior: 'smooth' });
 }
+async function pickContact() {
+  if (!('contacts' in navigator) || !('ContactsManager' in window)) {
+    alert('Contact picker not supported on this device/browser');
+    return;
+  }
 
+  try {
+    const props = ['name', 'tel'];
+    const opts = { multiple: false };
+
+    const contacts = await navigator.contacts.select(props, opts);
+
+    if (contacts.length > 0) {
+      const c = contacts[0];
+
+      // Auto-fill customer name
+      if (c.name && c.name.length) {
+        document.getElementById('nc-name').value = c.name[0];
+      }
+
+      // Auto-fill phone number
+      if (c.tel && c.tel.length) {
+        let phone = c.tel[0].replace(/\D/g, '');
+
+        // Add India country code automatically
+        if (phone.length === 10) {
+          phone = '91' + phone;
+        }
+
+        document.getElementById('nc-phone').value = phone;
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Failed to pick contact');
+  }
+}
 function openEditCustomer(id) {
   const c = DB.customers.find(x => x.id === id);
   if (!c) return;
