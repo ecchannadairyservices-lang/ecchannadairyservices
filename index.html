@@ -34,14 +34,14 @@
     <p class="login-sub">Who is logging in?</p>
   </div>
   <div class="login-roles">
-    <button class="role-btn" onclick="login('owner')">
+    <button class="role-btn" onclick="login('me')">
       <span class="role-icon">👤</span>
       <span class="role-label">Owner (You)</span>
       <span class="role-desc">Full access</span>
     </button>
-    <button class="role-btn" onclick="login('father')">
+    <button class="role-btn" onclick="login('sowmya')">
       <span class="role-icon">👨</span>
-      <span class="role-label">Father / Mother</span>
+      <span class="role-label">arjun/ Mother</span>
       <span class="role-desc">Payments & reminders</span>
     </button>
     <button class="role-btn" onclick="login('delivery')">
@@ -308,7 +308,12 @@
     <div class="section-card" id="add-customer-card" style="display:none">
       <div class="section-card-title">➕ Add new customer</div>
       <label>Full name *</label><input type="text" id="nc-name" placeholder="Ramesh Kumar">
-      <label>WhatsApp number * (with 91)</label><input type="text" id="nc-phone" placeholder="919876543210">
+      <label>WhatsApp number * (with 91)</label>
+      <input type="text" id="nc-phone" placeholder="919876543210">
+
+      <button type="button" class="submit-btn secondary" onclick="pickContact()" style="margin-top:8px">
+         📱 Pick From Contacts
+      </button>
       <label>Area / locality *</label><input type="text" id="nc-area" placeholder="Vidyanagar">
       <label>Milk breed *</label><select id="nc-breed"></select>
       <div class="two-col">
