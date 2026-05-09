@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1a5c2a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ecchanna Dairy">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Ecchanna Dairy Services</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-inner">
+    <div class="splash-logo">🐄</div>
+    <div class="splash-name">Ecchanna Dairy</div>
+    <div class="splash-sub">Services</div>
+    <div class="splash-loader"><div class="loader-bar"></div></div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen" class="screen hidden">
+  <div class="login-top">
+    <div class="login-logo">🐄</div>
+    <h1 class="login-title">Ecchanna Dairy</h1>
+    <p class="login-sub">Who is logging in?</p>
+  </div>
+  <div class="login-roles">
+    <button class="role-btn" onclick="login('owner')">
+      <span class="role-icon">👤</span>
+      <span class="role-label">Owner (You)</span>
+      <span class="role-desc">Full access</span>
+    </button>
+    <button class="role-btn" onclick="login('father')">
+      <span class="role-icon">👨</span>
+      <span class="role-label">arjun/ sowmya </span>
+      <span class="role-desc">Payments & reminders</span>
+    </button>
+    <button class="role-btn" onclick="login('delivery')">
+      <span class="role-icon">🛵</span>
+      <span class="role-label">Delivery Boy</span>
+      <span class="role-desc">Stop-list only</span>
+    </button>
+  </div>
+</div>
+
+<!-- DELIVERY VIEW (simple stop list) -->
+<div id="delivery-screen" class="screen hidden">
+  <div class="top-bar">
+    <button class="back-btn" onclick="logout()">← Back</button>
+    <span class="top-title">Today's Stop List</span>
+    <span></span>
+  </div>
+  <div class="delivery-notice">
+    <div class="notice-icon">🚫</div>
+    <div class="notice-title">Do NOT deliver milk to these customers today</div>
+  </div>
+  <div id="stop-list-container"></div>
+  <div class="delivery-all-good hidden" id="delivery-ok">
+    <div style="font-size:3rem">✅</div>
+    <div style="font-size:1.1rem;font-weight:600;color:#1a5c2a">All customers active today</div>
+    <div style="font-size:0.85rem;color:#666;margin-top:4px">No stops on this route</div>
+  </div>
+</div>
+
+<!-- PARENT VIEW (simplified) -->
+<div id="parent-screen" class="screen hidden">
+  <div class="parent-header">
+    <div class="parent-logo">🐄 Ecchanna Dairy</div>
+    <button class="logout-small" onclick="logout()">Exit</button>
+  </div>
+  <div id="parent-summary"></div>
+  <div class="parent-actions">
+    <button class="big-action-btn green" onclick="showSection('parent-pending')">
+      <span class="ba-icon">💰</span>
+      <span class="ba-label">Who hasn't paid?</span>
+    </button>
+    <button class="big-action-btn blue" onclick="showSection('parent-record')">
+      <span class="ba-icon">✅</span>
+      <span class="ba-label">Mark payment received</span>
+    </button>
+    <button class="big-action-btn orange" onclick="showSection('parent-remind')">
+      <span class="ba-icon">📲</span>
+      <span class="ba-label">Send WhatsApp reminder</span>
+    </button>
+  </div>
+
+  <!-- PARENT: pending list -->
+  <div id="parent-pending" class="parent-section hidden">
+    <div class="section-head">
+      <button onclick="hideSection('parent-pending')">← Back</button>
+      <span>Pending payments</span>
+    </div>
+    <div id="parent-pending-list"></div>
+  </div>
+
+  <!-- PARENT: record payment -->
+  <div id="parent-record" class="parent-section hidden">
+    <div class="section-head">
+      <button onclick="hideSection('parent-record')">← Back</button>
+      <span>Mark payment</span>
+    </div>
+    <div class="form-card">
+      <label>Customer</label>
+      <select id="pr-cust" onchange="fillParentBal()">
+        <option value="">-- select --</option>
+      </select>
+      <label>Balance due</label>
+      <div class="balance-display" id="pr-bal">Select customer</div>
+      <label>Amount received (₹)</label>
+      <input type="number" id="pr-amt" placeholder="Enter amount">
+      <label>How was it paid?</label>
+      <div class="pay-method-row">
+        <button class="method-btn active" data-method="Cash" onclick="selectMethod(this)">💵 Cash</button>
+        <button class="method-btn" data-method="GPay" onclick="selectMethod(this)">📱 GPay</button>
+        <button class="method-btn" data-method="Paytm" onclick="selectMethod(this)">💙 Paytm</button>
+        <button class="method-btn" data-method="Other UPI" onclick="selectMethod(this)">🔄 Other UPI</button>
+      </div>
+      <button class="submit-btn" onclick="parentRecordPayment()">Save payment</button>
+      <div id="pr-msg"></div>
+    </div>
+  </div>
+
+  <!-- PARENT: send reminders -->
+  <div id="parent-remind" class="parent-section hidden">
+    <div class="section-head">
+      <button onclick="hideSection('parent-remind')">← Back</button>
+      <span>Send reminders</span>
+    </div>
+    <p style="font-size:0.8rem;color:#666;padding:0 1rem 0.5rem">Tap "Send" next to any customer to open WhatsApp with the message ready. Just press send.</p>
+    <div id="parent-remind-list"></div>
+  </div>
+</div>
+
+<!-- OWNER VIEW -->
+<div id="owner-screen" class="screen hidden">
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="ownerTab('dashboard')" id="nav-dashboard">
+      <span class="nav-icon">📊</span><span class="nav-label">Dashboard</span>
+    </button>
+    <button class="nav-btn" onclick="ownerTab('customers')" id="nav-customers">
+      <span class="nav-icon">👥</span><span class="nav-label">Customers</span>
+    </button>
+    <button class="nav-btn" onclick="ownerTab('billing')" id="nav-billing">
+      <span class="nav-icon">🧾</span><span class="nav-label">Billing</span>
+    </button>
+    <button class="nav-btn" onclick="ownerTab('ai')" id="nav-ai">
+      <span class="nav-icon">🤖</span><span class="nav-label">AI Read</span>
+    </button>
+    <button class="nav-btn" onclick="ownerTab('settings')" id="nav-settings">
+      <span class="nav-icon">⚙️</span><span class="nav-label">Settings</span>
+    </button>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <div class="owner-tab active" id="tab-dashboard">
+    <div class="owner-header">
+      <div class="owner-title">🐄 Ecchanna Dairy</div>
+      <button class="logout-small" onclick="logout()">Exit</button>
+    </div>
+    <div class="stats-grid" id="dash-stats"></div>
+    <div class="section-card">
+      <div class="section-card-title">📅 <span id="dash-month"></span> — Top overdue</div>
+      <div id="dash-overdue"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-title">📋 Recent payments</div>
+      <div id="dash-recent"></div>
+    </div>
+  </div>
+
+  <!-- CUSTOMERS -->
+  <div class="owner-tab" id="tab-customers">
+    <div class="owner-header">
+      <div class="owner-title">Customers</div>
+      <button class="add-btn" onclick="showAddCustomer()">+ Add</button>
+    </div>
+    <input type="text" class="search-box" placeholder="Search name, area, breed, phone..." oninput="renderCustomers(this.value)" id="cust-search">
+    <div class="filter-row" id="area-filters"></div>
+    <div id="customers-list"></div>
+  </div>
+
+  <!-- BILLING -->
+  <div class="owner-tab" id="tab-billing">
+    <div class="owner-header"><div class="owner-title">Bill Calculator</div></div>
+    <div class="form-card">
+      <label>Select customer</label>
+      <select id="bill-cust-sel" onchange="loadBillCalc()"><option value="">-- select customer --</option></select>
+    </div>
+    <div id="bill-calc-body" style="display:none">
+      <div class="form-card">
+        <div class="bill-cust-name" id="bill-cust-display"></div>
+        <label>Milk breed</label>
+        <select id="bc-breed" onchange="calcBill()"></select>
+        <div class="two-col">
+          <div><label>Litres / day</label><input type="number" id="bc-ltrs" step="0.5" oninput="calcBill()"></div>
+          <div><label>Absent days</label><input type="number" id="bc-abs" value="0" min="0" oninput="calcBill()"></div>
+        </div>
+        <div class="absent-note" id="bc-abs-note"></div>
+        <div class="bill-breakdown" id="bc-breakdown"></div>
+        <label>Amount paid so far (₹)</label>
+        <input type="number" id="bc-paid" value="0" oninput="calcBill()">
+        <div class="bill-balance" id="bc-balance"></div>
+        <label>Payment method</label>
+        <div class="pay-method-row">
+          <button class="method-btn active" data-method="Cash" onclick="selectMethod(this)">💵 Cash</button>
+          <button class="method-btn" data-method="GPay" onclick="selectMethod(this)">📱 GPay</button>
+          <button class="method-btn" data-method="Paytm" onclick="selectMethod(this)">💙 Paytm</button>
+          <button class="method-btn" data-method="Other UPI" onclick="selectMethod(this)">🔄 Other</button>
+        </div>
+        <button class="submit-btn" onclick="saveBillCalc()">💾 Save bill</button>
+        <button class="wa-btn" id="bc-wa-btn">📲 Send WhatsApp bill</button>
+        <div id="bc-msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI READER -->
+  <div class="owner-tab" id="tab-ai">
+    <div class="owner-header"><div class="owner-title">AI Message Reader</div></div>
+    <div class="form-card">
+      <p class="help-text">Copy any WhatsApp message a customer sent about payment. AI will detect the amount, breed changes, absent days, and update the record.</p>
+      <label>Customer (select to help AI)</label>
+      <select id="ai-cust-sel"><option value="">-- optional --</option></select>
+      <label>Paste customer's message</label>
+      <textarea id="ai-msg-inp" rows="4" placeholder="e.g. 'Bhai aaj 800 bheja GPay se' or '3 din dudh nahi aaya' or 'done paid 1500'"></textarea>
+      <button class="submit-btn" id="ai-read-btn" onclick="runAIRead()">🤖 Read & detect payment</button>
+      <div id="ai-result-box"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-title">Recent AI reads</div>
+      <div id="ai-history-list"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="owner-tab" id="tab-settings">
+    <div class="owner-header"><div class="owner-title">Settings</div></div>
+
+    <!-- Breed rates -->
+    <div class="section-card">
+      <div class="section-card-title">🐄 Breed rates (₹ per litre)</div>
+      <div id="breed-settings-list"></div>
+      <div class="add-breed-form">
+        <div class="two-col">
+          <div><label>Breed name</label><input type="text" id="new-breed-name" placeholder="e.g. Gir Cow"></div>
+          <div><label>Rate (₹/L)</label><input type="number" id="new-breed-rate" placeholder="120"></div>
+        </div>
+        <input type="text" id="new-breed-emoji" placeholder="Emoji (optional, e.g. 🐮)" style="max-width:160px">
+        <button class="submit-btn" onclick="addBreed()" style="margin-top:8px">Add breed</button>
+        <div id="breed-msg"></div>
+      </div>
+    </div>
+
+    <!-- UPI / payment info -->
+    <div class="section-card">
+      <div class="section-card-title">💳 Payment details (shown in WhatsApp bills)</div>
+      <label>GPay number</label><input type="text" id="gpay-num" placeholder="91XXXXXXXXXX">
+      <label>Paytm number</label><input type="text" id="paytm-num" placeholder="91XXXXXXXXXX">
+      <label>Business name on bills</label><input type="text" id="biz-name-inp" placeholder="Ecchanna Dairy Services">
+      <button class="submit-btn" onclick="savePaymentSettings()">Save</button>
+      <div id="pay-set-msg"></div>
+    </div>
+
+    <!-- Month settings -->
+    <div class="section-card">
+      <div class="section-card-title">📅 Billing month</div>
+      <div class="two-col">
+        <div><label>Month</label><input type="month" id="bill-month-inp"></div>
+        <div><label>Days in month</label><input type="number" id="bill-days-inp" min="28" max="31"></div>
+      </div>
+      <button class="submit-btn" onclick="saveMonthSettings()">Save</button>
+    </div>
+
+    <!-- Bulk import -->
+    <div class="section-card">
+      <div class="section-card-title">📤 Bulk import customers</div>
+      <p class="help-text">CSV format: Name, WhatsApp number, Area, Breed, Litres/day<br>One customer per line. Phone must start with 91.</p>
+      <textarea id="bulk-csv" rows="5" style="font-family:monospace;font-size:12px" placeholder="Ramesh Kumar,919876543210,Vidyanagar,Malnad Gidda,1&#10;Sunita Devi,918765432109,Surathkal,Kaat Petta,0.5"></textarea>
+      <button class="submit-btn" onclick="bulkImport()">Import customers</button>
+      <div id="import-msg"></div>
+    </div>
+
+    <!-- Export / Backup -->
+    <div class="section-card">
+      <div class="section-card-title">💾 Backup & export</div>
+      <p class="help-text">Download your data. Do this every month. Open CSV in Google Sheets or Excel.</p>
+      <button class="submit-btn" onclick="exportCSV()">📥 Download CSV (Google Sheets)</button>
+      <button class="submit-btn secondary" onclick="exportJSON()" style="margin-top:8px">📦 Full backup (JSON)</button>
+      <div style="margin-top:16px;border-top:1px solid #eee;padding-top:16px">
+        <div style="font-weight:600;font-size:0.85rem;margin-bottom:6px">Restore from JSON backup</div>
+        <textarea id="restore-inp" rows="3" style="font-size:11px;font-family:monospace" placeholder="Paste JSON backup here"></textarea>
+        <button class="submit-btn secondary" onclick="restoreJSON()">Restore</button>
+        <div id="restore-msg"></div>
+      </div>
+    </div>
+
+    <!-- Add customer -->
+    <div class="section-card" id="add-customer-card" style="display:none">
+      <div class="section-card-title">➕ Add new customer</div>
+      <label>Full name *</label><input type="text" id="nc-name" placeholder="Ramesh Kumar">
+      <label>WhatsApp number * (with 91)</label>
+      <input type="text" id="nc-phone" placeholder="919876543210">
+
+      <button type="button" class="submit-btn secondary" onclick="pickContact()" style="margin-top:8px">
+         📱 Pick From Contacts
+      </button>
+      <label>Area / locality *</label><input type="text" id="nc-area" placeholder="Vidyanagar">
+      <label>Milk breed *</label><select id="nc-breed"></select>
+      <div class="two-col">
+        <div><label>Litres / day *</label><input type="number" id="nc-ltrs" step="0.5" placeholder="1"></div>
+        <div><label>Custom rate (₹/L)</label><input type="number" id="nc-crate" placeholder="(optional)"></div>
+      </div>
+      <label>Stop delivery? (mark if paused)</label>
+      <select id="nc-stopped"><option value="no">No — active customer</option><option value="yes">Yes — stop delivery</option></select>
+      <button class="submit-btn" onclick="addCustomer()">Add customer</button>
+      <div id="nc-msg"></div>
+    </div>
+
+    <div style="padding:1rem;text-align:center">
+      <button class="logout-small" onclick="logout()" style="margin:0 auto;display:block">🚪 Log out</button>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
